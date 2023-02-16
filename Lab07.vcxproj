@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Lab07.cpp" />
+    <ClCompile Include="Lab07Prototype.cpp" />
     <ClCompile Include="position.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="uiDraw.cpp" />
