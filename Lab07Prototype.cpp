@@ -10,11 +10,18 @@
  * 5. How long did it take for you to complete the assignment?
  *      
  *****************************************************************/
+
 #include <iostream>
 #include "acceleration.h"
 #include "angle.h"
 #include "velocity.h"
 #include "position.h"
+
+#define _USE_MATH_DEFINES    // for M_PI
+#include <math.h>            // for sin and cos
+#include <map>
+
+#define INITIAL_VELOCITY 827.0  //Initial velocity is 827 m/s
 
 using namespace std;
 
@@ -31,286 +38,112 @@ double linearInterpolation(double x0, double y0, double x1, double y1, double x)
 }
 
 /*********************************
-* INTERPOLATE DRAG
-* Interpolate the drag from mach with the values from the chart we are given
+* CALCULATE DRAG COEFFICIENT
+* Determine the drag coefficient at 
+* a given speed in Mach
 ********************************/
-double interpolateDrag(double mach)    
+double calculateDragC(double mach)    
 {
-   if (0.3 < mach < 0.5)
+   // a lookup table for drag coefficient (second) according to Mach (first)
+   std::map<double, double> const dragTable 
    {
-      return linearInterpolation(0.3, 0.1659, 0.5, 0.1659, mach);
-   }
-   else if (0.5 < mach < 0.7)
+         {0.300, 0.1629}, {0.500, 0.1659}, {0.700, 0.2031}, {0.890, 0.2597}, 
+         {0.920, 0.3010}, {0.960, 0.3287}, {0.980, 0.4002}, {1.000, 0.4259},
+         {1.020, 0.4335}, {1.060, 0.4483}, {1.240, 0.4064}, {1.530, 0.3663}, 
+         {1.990, 0.2897}, {2.870, 0.2297}, {2.890, 0.2306}, {5.000, 0.2656} 
+   };
+
+   // iterate through the drag table to see where our mach falls
+   for (auto it = dragTable.begin(); it != dragTable.end(); it++)
    {
-      return linearInterpolation(0.5, 0.1659, 0.7, 0.2031, mach);
-   }
-   else if (0.7 < mach < 0.89)
-   {
-      return linearInterpolation(0.7, 0.2031, 0.89, 0.2597, mach);
-   }
-   else if (0.89 < mach < 0.92)
-   {
-      return linearInterpolation(0.89, 0.2597, 0.92, 0.3010, mach);
-   }
-   else if (0.92 < mach < 0.96)
-   {
-      return linearInterpolation(0.92, 0.3010, 0.96, 0.3287, mach);
-   }
-   else if (0.96 < mach < 0.98)
-   {
-      return linearInterpolation(0.96, 0.3287, 0.98, 0.4002, mach);
-   }
-   else if (0.98 < mach < 1.0)
-   {
-      return linearInterpolation(0.98, 0.4002, 1.0, 0.4258, mach);
-   }
-   else if (1.0 < mach < 1.02)
-   {
-      return linearInterpolation(1.0, 0.4258, 1.02, 0.4335, mach);
-   }
-   else if (1.02 < mach < 1.06)
-   {
-      return linearInterpolation(1.02, 0.4335, 1.06, 0.4483, mach);
-   }
-   else if (1.06 < mach < 1.24)
-   {
-      return linearInterpolation(1.06, 0.4483, 1.24, 0.4064, mach);
-   }
-   else if (1.24 < mach < 1.53)
-   {
-      return linearInterpolation(1.24, 0.4064, 1.53, 0.3663, mach);
-   }
-   else if (1.53 < mach < 1.99)
-   {
-      return linearInterpolation(1.53, 0.3663, 1.99, 0.2897, mach);
-   }
-   else if (1.99 < mach < 2.87)
-   {
-      return linearInterpolation(1.99, 0.2897, 2.87, 0.2297, mach);
-   }
-   else if (2.87 < mach < 2.89)
-   {
-      return linearInterpolation(2.87, 0.2297, 2.89, 0.2306, mach);
-   }
-   else if (2.89 < mach < 5.0)
-   {
-      return linearInterpolation(2.89, 0.2306, 5.0, 0.2656, mach);
+      // if our mach is in the table, return the corresponding value
+      if (it->first == mach)
+         return it->second;
+      // otherwise, interpolate between the two closest values
+      else if (it->first > mach)
+         return linearInterpolation(it->first, it->second, it--->first, it->second, mach);
    }
 }
 
 /*********************************
-* INTERPOLATE DENSITY
-* Inrerpolates the density for a given altitude from the chart we are given
+* CALCULATE DENSITY
+* Determine the air density at a given altitude
 ********************************/
-double interpolateDensity(double altitude)
+double calculateDensity(double altitude)
 {
-   if (0.0 < altitude < 1000.0)
+   // a lookup table for air density (second) according to altitude (first)
+   std::map<double, double> const densityTable
    {
-      return linearInterpolation(0.0, 1.2250000, 1000.0, 1.1120000, altitude);
-   }
-   else if (1000 < altitude < 2000)
+         {    0.0, 1.2250000}, { 1000.0, 1.1120000}, { 2000.0, 1.0070000}, { 3000.0, 0.9093000},
+         { 4000.0, 0.8194000}, { 5000.0, 0.7364000}, { 6000.0, 0.6601000}, { 7000.0, 0.5900000},
+         { 8000.0, 0.5258000}, { 9000.0, 0.4671000}, {10000.0, 0.4135000}, {15000.0, 0.1948000},
+         {20000.0, 0.0889100}, {25000.0, 0.0400800}, {30000.0, 0.0184100}, {40000.0, 0.0039960},
+         {50000.0, 0.0010270}, {60000.0, 0.0003097}, {70000.0, 0.0000828}, {80000.0, 0.0000185}
+   };
+
+   // iterate through the density table to see where our altitude falls
+   for (auto it = densityTable.begin(); it != densityTable.end(); it++)
    {
-      return linearInterpolation(1000, 1.1120000, 2000, 1.0070000, altitude);
-   }
-   else if (2000 < altitude < 3000)
-   {
-      return linearInterpolation(2000, 1.0070000, 3000, 0.9093000, altitude);
-   }
-   else if (3000 < altitude < 4000)
-   {
-      return linearInterpolation(3000, 0.9093000, 4000, 0.8194000, altitude);
-   }
-   else if (4000 < altitude < 5000)
-   {
-      return linearInterpolation(4000, 0.8194000, 5000, 0.7364000
-         , altitude);
-   }
-   else if (5000 < altitude < 6000)
-   {
-      return linearInterpolation(5000, 0.7364000
-         , 6000, 0.6601000, altitude);
-   }
-   else if (6000 < altitude < 7000)
-   {
-      return linearInterpolation(6000, 0.6601000, 7000, 0.5900000, altitude);
-   }
-   else if (7000 < altitude < 8000)
-   {
-      return linearInterpolation(7000, 0.5900000, 8000, 0.5258000, altitude);
-   }
-   else if (8000 < altitude < 9000)
-   {
-      return linearInterpolation(8000, 0.5258000, 9000, 0.4671000, altitude);
-   }
-   else if (9000 < altitude < 10000)
-   {
-      return linearInterpolation(9000, 0.4671000, 10000, 0.4135000, altitude);
-   }
-   else if (10000 < altitude < 15000)
-   {
-      return linearInterpolation(10000, 0.4135000, 15000, 0.1948000
-         , altitude);
-   }
-   else if (15000 < altitude < 20000)
-   {
-      return linearInterpolation(15000, 0.1948000
-         , 20000, 0.0889100, altitude);
-   }
-   else if (20000 < altitude < 25000)
-   {
-      return linearInterpolation(20000, 0.0889100, 25000, 0.0400800, altitude);
-   }
-   else if (25000 < altitude < 30000)
-   {
-      return linearInterpolation(25000, 0.0400800, 30000, 0.0184100, altitude);
-   }
-   else if (30000 < altitude < 40000)
-   {
-      return linearInterpolation(30000, 0.0184100, 40000, 0.0039960, altitude);
-   }
-   else if (40000 < altitude < 50000)
-   {
-      return linearInterpolation(40000, 0.0039960, 50000, 0.0010270, altitude);
-   }
-   else if (50000 < altitude < 60000)
-   {
-      return linearInterpolation(50000, 0.0010270, 60000, 0.0003097, altitude);
-   }
-   else if (60000 < altitude < 70000)
-   {
-      return linearInterpolation(60000, 0.0003097, 70000, 0.0000828, altitude);
-   }
-   else if (70000 < altitude < 80000)
-   {
-      return linearInterpolation(70000, 0.0000828, 80000, 0.0000185, altitude);
+      // if our altitude is in the table, return the corresponding value
+      if (it->first == altitude)
+         return it->second;
+      // otherwise, interpolate between the two closest values
+      else if (it->first > altitude)
+         return linearInterpolation(it->first, it->second, it--->first, it->second, altitude);
    }
 }
 
 /*********************************
-* INTERPOLATE SPEED OF SOUND
-* Interpolate the speed of sound from altitude from the chart that we are given
+* CALCULATE SPEED OF SOUND
+* Determine the speed of sound at a given altitude
 ********************************/
 double interpolateSpeedOfSound(double altitude)
 {
-   if (0.0 < altitude < 1000)
+   // a lookup table for speed of sound (second) according to altitude (first)
+   std::map<double, double> const soundTable
    {
-      return linearInterpolation(0.0, 340, 1000, 336, altitude);
-   }
-   else if (1000 < altitude < 2000)
+         {    0.0, 340.0}, { 1000.0, 336.0}, { 2000.0, 332.0}, { 3000.0, 328.0},
+         { 4000.0, 324.0}, { 5000.0, 320.0}, { 6000.0, 316.0}, { 7000.0, 312.0},
+         { 8000.0, 308.0}, { 9000.0, 303.0}, {10000.0, 299.0}, {15000.0, 295.0},
+         {20000.0, 295.0}, {25000.0, 295.0}, {30000.0, 305.0}, {40000.0, 324.0}
+   };
+
+   // iterate through the sound table to see where our altitude falls
+   for (auto it = soundTable.begin(); it != soundTable.end(); it++)
    {
-      return linearInterpolation(1000, 336, 2000, 332, altitude);
-   }
-   else if (2000 < altitude < 3000)
-   {
-      return linearInterpolation(2000, 332, 3000, 328, altitude);
-   }
-   else if (3000 < altitude < 4000)
-   {
-      return linearInterpolation(3000, 328, 4000, 324, altitude);
-   }
-   else if (4000 < altitude < 5000)
-   {
-      return linearInterpolation(4000, 324, 5000, 320, altitude);
-   }
-   else if (5000 < altitude < 6000)
-   {
-      return linearInterpolation(5000, 320, 6000, 316, altitude);
-   }
-   else if (6000 < altitude < 7000)
-   {
-      return linearInterpolation(6000, 316, 7000, 312, altitude);
-   }
-   else if (7000 < altitude < 8000)
-   {
-      return linearInterpolation(7000, 312, 8000, 308, altitude);
-   }
-   else if (8000 < altitude < 9000)
-   {
-      return linearInterpolation(8000, 308, 9000, 303, altitude);
-   }
-   else if (9000 < altitude < 10000)
-   {
-      return linearInterpolation(9000, 303, 10000, 299, altitude);
-   }
-   else if (10000 < altitude < 15000)
-   {
-      return linearInterpolation(10000, 299, 15000, 295, altitude);
-   }
-   else if (15000 < altitude < 20000)
-   {
-      return linearInterpolation(15000, 295, 20000, 295, altitude);
-   }
-   else if (20000 < altitude < 25000)
-   {
-      return linearInterpolation(20000, 295, 25000, 295, altitude);
-   }
-   else if (25000 < altitude < 30000)
-   {
-      return linearInterpolation(25000, 295, 30000, 305, altitude);
-   }
-   else if (30000 < altitude < 40000)
-   {
-      return linearInterpolation(30000, 305, 40000, 324, altitude);
+      // if our altitude is in the table, return the corresponding value
+      if (it->first == altitude)
+         return it->second;
+      // otherwise, interpolate between the two closest values
+      else if (it->first > altitude)
+         return linearInterpolation(it->first, it->second, it--->first, it->second, altitude);
    }
 }
 
 /*********************************
-* INTERPOLATE GRAVITY
-* Interpolate gravity in m/(s^2) from altitude from the chart that we are given
+* CALCULATE GRAVITY
+* Determine the gravity at a given altitude
 ********************************/
-double interpolateSpeedOfSound(double altitude)
+double calculateGravity(double altitude)
 {
-   if (0.0 < altitude < 1000)
+   // a lookup table for gravity (second) according to altitude (first)
+   std::map<double, double> const gravityTable
    {
-      return linearInterpolation(0.0, 9.807, 1000, 9.804, altitude);
-   }
-   else if (1000 < altitude < 2000)
+         {    0.0, 9.807}, { 1000.0, 9.804}, { 2000.0, 9.801}, { 3000.0, 9.797},
+         { 4000.0, 9.794}, { 5000.0, 9.791}, { 6000.0, 9.788}, { 7000.0, 9.785},
+         { 8000.0, 9.782}, { 9000.0, 9.779}, {10000.0, 9.776}, {15000.0, 9.761},
+         {20000.0, 9.745}, {25000.0, 9.730}
+   };
+
+   // iterate through the gravity table to see where our altitude falls
+   for (auto it = gravityTable.begin(); it != gravityTable.end(); it++)
    {
-      return linearInterpolation(1000, 9.804, 2000, 9.801, altitude);
-   }
-   else if (2000 < altitude < 3000)
-   {
-      return linearInterpolation(2000, 9.801, 3000, 9.797, altitude);
-   }
-   else if (3000 < altitude < 4000)
-   {
-      return linearInterpolation(3000, 9.797, 4000, 9.794, altitude);
-   }
-   else if (4000 < altitude < 5000)
-   {
-      return linearInterpolation(4000, 9.794, 5000, 9.791, altitude);
-   }
-   else if (5000 < altitude < 6000)
-   {
-      return linearInterpolation(5000, 9.791, 6000, 9.788, altitude);
-   }
-   else if (6000 < altitude < 7000)
-   {
-      return linearInterpolation(6000, 9.788, 7000, 9.785, altitude);
-   }
-   else if (7000 < altitude < 8000)
-   {
-      return linearInterpolation(7000, 9.785, 8000, 9.782, altitude);
-   }
-   else if (8000 < altitude < 9000)
-   {
-      return linearInterpolation(8000, 9.782, 9000, 9.779, altitude);
-   }
-   else if (9000 < altitude < 10000)
-   {
-      return linearInterpolation(9000, 9.779, 10000, 9.776, altitude);
-   }
-   else if (10000 < altitude < 15000)
-   {
-      return linearInterpolation(10000, 9.776, 15000, 9.761, altitude);
-   }
-   else if (15000 < altitude < 20000)
-   {
-      return linearInterpolation(15000, 9.761, 20000, 9.745, altitude);
-   }
-   else if (20000 < altitude < 25000)
-   {
-      return linearInterpolation(20000, 9.745, 25000, 9.730, altitude);
+      // if our altitude is in the table, return the corresponding value
+      if (it->first == altitude)
+         return it->second;
+      // otherwise, interpolate between the two closest values
+      else if (it->first > altitude)
+         return linearInterpolation(it->first, it->second, it--->first, it->second, altitude);
    }
 }
 
@@ -318,49 +151,62 @@ double interpolateSpeedOfSound(double altitude)
 * CALCULATE DRAG FORCE
 * Calculates the drag force from a drag coefficient,
 * dendity of the air, velocity, and surface area
+* d = 1/2 c p v^2 a
 ********************************/
-double calculateDrag(double drag_c, double density, double velocity, double area)
+double calculateDragForce(double dragC, double density, double velocity, double area)
 {
-   return (0.5 * drag_c * density * (velocity * velocity) * area); 
+   return (0.5 * dragC * density * (velocity * velocity) * area); 
 }
 
 /*********************************
 * CALCULATE SURFACE AREA
-* Calculates the surface area of the shot given a radius
+* Calculates the area of a circle given a radius
+* a = pi r^2
 **********************************/
-double calculateSurfaceArea(double radius)
+double calculateCircleArea(double radius)
 {
-   return 3.14159265358979 * (radius * radius);
+   return M_PI * (radius * radius);
 }
 
 /*********************************
 * CALCULATE FORCE
 * Calculates force from mass in kg times acceleration in m/(s^2)
+* f = m a
 ********************************/
 double calculateForce(double mass, double acceleration)
 {
    return mass * acceleration;
 }
 
+/********************************
+ * PROMPT
+ * A generic function to prompt the user for a double
+ *******************************/
+double prompt(string message)
+{
+   double value = 0.0;
+   cout << message;
+   cin >> value;
+   return value;
+}
+
+
 /*********************************
 * SIMULATE
 * Simulate the artillery shot untill it hits the ground
 ********************************/
-void simulate(double angle)
+void simulate(Angle angle)
 {
-   double velocity = 827;  //Initial velocity is 827 m/s
-   double surface_area = calculateSurfaceArea(0.15489 / 2); //Diameter of shot is 0.15489m
-   double density = 1.225; //Initial air density at 0m altitude is 1.225 kg/(m^2)
-   double mass = 46.7;     //The mass of the shot is 46.7kg
-   double altitude = 0.0; //Initial altitude is 0
+   Velocity velocity = Velocity(INITIAL_VELOCITY, angle);                               
+   double surface_area = calculateCircleArea(0.15489 / 2.0); //Diameter of shot is 0.15489m
+   double density = 1.225;                                   //Initial air density at 0m altitude is 1.225 kg/(m^2)
+   double mass = 46.7;                                       //The mass of the shot is 46.7kg
+   double altitude = 0.0;                                    //Initial altitude is 0
 
-   while (altitude >= 0.0)
+   do
    {
-      Position position;
 
-   }
-
-
+   } while (altitude > 0.0);
 }
 
 /*********************************
@@ -368,12 +214,9 @@ void simulate(double angle)
 ********************************/
 int main()
 {
-   float user_angle;
+   Angle angle = Angle(prompt("What is the angle of the Howizter, where 0 is up?: "));
+   Velocity v = Velocity(0.0, angle);
 
-   cout << "What is the angle of the Howizter, where 0 is up?: ";
-   cin >> user_angle;
-
-   simulate(user_angle);
-
+   simulate(angle);
 }
 
