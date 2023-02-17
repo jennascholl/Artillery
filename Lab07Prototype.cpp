@@ -17,13 +17,16 @@
 #include "velocity.h"
 #include "position.h"
 
-#define _USE_MATH_DEFINES    // for M_PI
-#include <math.h>            // for sin and cos
-#include <map>
-
-#define INITIAL_VELOCITY 827.0  //Initial velocity is 827 m/s
+#define _USE_MATH_DEFINES    // For M_PI
+#include <math.h>            // For sin and cos
+#include <map>               // For linearInterpolation()
 
 using namespace std;
+
+const double INITIAL_V = 827.00;     // Initial velocity in m/s
+const double TIME = 0.01;            // The rate at which time passes
+const double DIAMETER = 0.15489;     // The diameter of the projectile in m
+const double MASS = 46.7;            // The mass of the shot in kg
 
 /*********************************
 * LINEAR INTERPOLATION
@@ -38,40 +41,57 @@ double linearInterpolation(double x0, double y0, double x1, double y1, double x)
 }
 
 /*********************************
+* LOOKUP VALUE
+* Searches for a value using a given table,
+* using linear interpolation when the value
+* is not found
+********************************/
+double lookupValue(const std::map<double, double> & table, const double & value)
+{
+   // If the value is outside our table's range, return the closest value to it
+   if (value < table.begin()->first)
+      return table.begin()->second;
+   else if (value > table.rbegin()->first)
+      return table.rbegin()->second;
+
+   // Otherwise, iterate through the table to see where our value falls
+   for (auto it = table.begin(); it != table.end(); it++)
+   {
+      // If our value is in the table, return the corresponding value
+      if (it->first == value)
+         return it->second;
+      // Otherwise, interpolate between the two closest values
+      else if (it->first > value)
+         return linearInterpolation(it->first, it->second, it--->first, it->second, value);
+   }
+}
+
+/*********************************
 * CALCULATE DRAG COEFFICIENT
 * Determine the drag coefficient at 
 * a given speed in Mach
 ********************************/
 double calculateDragC(double mach)    
 {
-   // a lookup table for drag coefficient (second) according to Mach (first)
+   // A lookup table for drag coefficient (second) according to Mach (first)
    std::map<double, double> const dragTable 
    {
          {0.300, 0.1629}, {0.500, 0.1659}, {0.700, 0.2031}, {0.890, 0.2597}, 
-         {0.920, 0.3010}, {0.960, 0.3287}, {0.980, 0.4002}, {1.000, 0.4259},
+         {0.920, 0.3010}, {0.960, 0.3287}, {0.980, 0.4002}, {1.000, 0.4258},
          {1.020, 0.4335}, {1.060, 0.4483}, {1.240, 0.4064}, {1.530, 0.3663}, 
          {1.990, 0.2897}, {2.870, 0.2297}, {2.890, 0.2306}, {5.000, 0.2656} 
    };
 
-   // iterate through the drag table to see where our mach falls
-   for (auto it = dragTable.begin(); it != dragTable.end(); it++)
-   {
-      // if our mach is in the table, return the corresponding value
-      if (it->first == mach)
-         return it->second;
-      // otherwise, interpolate between the two closest values
-      else if (it->first > mach)
-         return linearInterpolation(it->first, it->second, it--->first, it->second, mach);
-   }
+   return lookupValue(dragTable, mach);
 }
 
 /*********************************
 * CALCULATE DENSITY
 * Determine the air density at a given altitude
 ********************************/
-double calculateDensity(double altitude)
+double calculateDensity(const double & altitude)
 {
-   // a lookup table for air density (second) according to altitude (first)
+   // A lookup table for air density (second) according to altitude (first)
    std::map<double, double> const densityTable
    {
          {    0.0, 1.2250000}, { 1000.0, 1.1120000}, { 2000.0, 1.0070000}, { 3000.0, 0.9093000},
@@ -81,25 +101,16 @@ double calculateDensity(double altitude)
          {50000.0, 0.0010270}, {60000.0, 0.0003097}, {70000.0, 0.0000828}, {80000.0, 0.0000185}
    };
 
-   // iterate through the density table to see where our altitude falls
-   for (auto it = densityTable.begin(); it != densityTable.end(); it++)
-   {
-      // if our altitude is in the table, return the corresponding value
-      if (it->first == altitude)
-         return it->second;
-      // otherwise, interpolate between the two closest values
-      else if (it->first > altitude)
-         return linearInterpolation(it->first, it->second, it--->first, it->second, altitude);
-   }
+   return lookupValue(densityTable, altitude);
 }
 
 /*********************************
 * CALCULATE SPEED OF SOUND
 * Determine the speed of sound at a given altitude
 ********************************/
-double interpolateSpeedOfSound(double altitude)
+double calculateSpeedOfSound(const double & altitude)
 {
-   // a lookup table for speed of sound (second) according to altitude (first)
+   // A lookup table for speed of sound (second) according to altitude (first)
    std::map<double, double> const soundTable
    {
          {    0.0, 340.0}, { 1000.0, 336.0}, { 2000.0, 332.0}, { 3000.0, 328.0},
@@ -108,25 +119,16 @@ double interpolateSpeedOfSound(double altitude)
          {20000.0, 295.0}, {25000.0, 295.0}, {30000.0, 305.0}, {40000.0, 324.0}
    };
 
-   // iterate through the sound table to see where our altitude falls
-   for (auto it = soundTable.begin(); it != soundTable.end(); it++)
-   {
-      // if our altitude is in the table, return the corresponding value
-      if (it->first == altitude)
-         return it->second;
-      // otherwise, interpolate between the two closest values
-      else if (it->first > altitude)
-         return linearInterpolation(it->first, it->second, it--->first, it->second, altitude);
-   }
+   return lookupValue(soundTable, altitude);
 }
 
 /*********************************
 * CALCULATE GRAVITY
 * Determine the gravity at a given altitude
 ********************************/
-double calculateGravity(double altitude)
+double calculateGravity(const double & altitude)
 {
-   // a lookup table for gravity (second) according to altitude (first)
+   // A lookup table for gravity (second) according to altitude (first)
    std::map<double, double> const gravityTable
    {
          {    0.0, 9.807}, { 1000.0, 9.804}, { 2000.0, 9.801}, { 3000.0, 9.797},
@@ -135,25 +137,17 @@ double calculateGravity(double altitude)
          {20000.0, 9.745}, {25000.0, 9.730}
    };
 
-   // iterate through the gravity table to see where our altitude falls
-   for (auto it = gravityTable.begin(); it != gravityTable.end(); it++)
-   {
-      // if our altitude is in the table, return the corresponding value
-      if (it->first == altitude)
-         return it->second;
-      // otherwise, interpolate between the two closest values
-      else if (it->first > altitude)
-         return linearInterpolation(it->first, it->second, it--->first, it->second, altitude);
-   }
+   return lookupValue(gravityTable, altitude);
 }
 
 /*********************************
-* CALCULATE DRAG FORCE
+* CALCULATE FORCE
 * Calculates the drag force from a drag coefficient,
-* dendity of the air, velocity, and surface area
+* density of the air, velocity, and surface area
 * d = 1/2 c p v^2 a
 ********************************/
-double calculateDragForce(double dragC, double density, double velocity, double area)
+double calculateForce(const double & dragC, const double & density, 
+   const double & velocity, const double & area)
 {
    return (0.5 * dragC * density * (velocity * velocity) * area); 
 }
@@ -163,26 +157,26 @@ double calculateDragForce(double dragC, double density, double velocity, double 
 * Calculates the area of a circle given a radius
 * a = pi r^2
 **********************************/
-double calculateCircleArea(double radius)
+double calculateCircleArea(const double & radius)
 {
    return M_PI * (radius * radius);
 }
 
 /*********************************
-* CALCULATE FORCE
+* CALCULATE ACCELERATION
 * Calculates force from mass in kg times acceleration in m/(s^2)
 * f = m a
 ********************************/
-double calculateForce(double mass, double acceleration)
+double calculateAcceleration(const double & force, const double & mass)
 {
-   return mass * acceleration;
+   return force / mass;
 }
 
 /********************************
  * PROMPT
  * A generic function to prompt the user for a double
  *******************************/
-double prompt(string message)
+double prompt(const string & message)
 {
    double value = 0.0;
    cout << message;
@@ -190,33 +184,75 @@ double prompt(string message)
    return value;
 }
 
+/********************************
+ * DISPLAY
+ * A function to display the results
+ * of the simulation
+ *******************************/
+void display(const double & distance, const double & time)
+{
+   cout.setf(ios::fixed | ios::showpoint);
+   cout.precision(1);
+   cout << "Distance:\t" << distance << "m \tHang Time:\t" << time << "s" << endl;
+}
 
 /*********************************
 * SIMULATE
 * Simulate the artillery shot untill it hits the ground
 ********************************/
-void simulate(Angle angle)
+void simulate(const Angle & angle, double & airTime, double & distance)
 {
-   Velocity velocity = Velocity(INITIAL_VELOCITY, angle);                               
-   double surface_area = calculateCircleArea(0.15489 / 2.0); //Diameter of shot is 0.15489m
-   double density = 1.225;                                   //Initial air density at 0m altitude is 1.225 kg/(m^2)
-   double mass = 46.7;                                       //The mass of the shot is 46.7kg
-   double altitude = 0.0;                                    //Initial altitude is 0
+   Position pt = Position(0.0, 0.0);                        // The projectile's current position
+   Position lastPt = Position();                            // The projectile's last known position
+   Velocity v = Velocity(INITIAL_V, angle);                 // The projectile's velocity
+   double area = calculateCircleArea(DIAMETER / 2.0);       // Surface area of the front of the missile
+   double total = 0.00;                                     // Total time passed since launch
 
    do
    {
+      // Update the projectile's last known position
+      lastPt = pt;
 
-   } while (altitude > 0.0);
+      // Update the environmental factors
+      double vSound = calculateSpeedOfSound(pt.getMetersY());
+      double vMach = v.getSpeed() / vSound;
+      double dragC = calculateDragC(vMach);
+      double force = calculateForce(dragC, calculateDensity(pt.getMetersY()), 
+         v.getSpeed(), area);
+      double gravity = calculateGravity(pt.getMetersY());
+
+      // Update the projectile's position, velocity, and acceleration
+      double acc = calculateAcceleration(force, MASS);
+      Acceleration acceleration(-sin(angle.getRadians()) * acc,
+         -cos(angle.getRadians()) * acc - gravity);
+      v.add(acceleration, TIME);
+      pt.addMetersX(v.getDX() * TIME + 0.5 * acceleration.getDDX() * TIME * TIME);
+      pt.addMetersY(v.getDY() * TIME + 0.5 * acceleration.getDDY() * TIME * TIME);
+
+      // Update the time passed
+      total += TIME;
+
+   } while (pt.getMetersY() >= 0.0); // Stop when we hit the ground
+
+   // Find the distance traveled and time in the air
+   distance = linearInterpolation(pt.getMetersY(), pt.getMetersX(), 
+      lastPt.getMetersY(), pt.getMetersX(), 0.0);
+   airTime = linearInterpolation(pt.getMetersY(), total, 
+      lastPt.getMetersY(), total - TIME, 0.0);
 }
 
-/*********************************
+/********************************
 * MAIN
 ********************************/
 int main()
 {
+   // Set the variables
    Angle angle = Angle(prompt("What is the angle of the Howizter, where 0 is up?: "));
-   Velocity v = Velocity(0.0, angle);
+   double airTime = 0.0;
+   double distance = 0.0;
 
-   simulate(angle);
+   // Run the simulator
+   simulate(angle, airTime, distance);
+   display(distance, airTime);
 }
 

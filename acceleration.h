@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "Angle.h"
+
 #include <math.h> // for sqrt()
 
 /*********************************************
@@ -23,9 +25,14 @@ private:
    double ddy;
    double gravity = -1.625;
 
+   // private functions
+   double computeDDX(double total, Angle angle);
+   double computeDDY(double total, Angle angle);
+
 public:
    // constructors
    Acceleration() : ddx(0.0), ddy(0.0) {}
+   Acceleration(double a, Angle angle);
    Acceleration(double ddx, double ddy);
 
    // getters
