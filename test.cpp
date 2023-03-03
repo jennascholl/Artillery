@@ -11,6 +11,7 @@
 #include "testPosition.h"
 #include "testGround.h"
 #include "testVelocity.h"
+#include "testHowitzer.h"
 
 /*****************************************************************
  * TEST RUNNER
@@ -21,4 +22,5 @@ void testRunner()
    TestPosition().run();
    TestGround().run();
    TestVelocity().run();
+   TestHowitzer().run();
 }

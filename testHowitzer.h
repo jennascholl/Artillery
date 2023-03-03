@@ -19,7 +19,7 @@ using namespace std;
  * TEST HOWITZER
  * A friend class for Howitzer which contains the Howitzer unit tests
  ********************************/
-class testHowitzer
+class TestHowitzer
 {
 public:
    void run() 
