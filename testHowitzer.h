@@ -15,7 +15,18 @@
 
 using namespace std;
 
+/*******************************
+ * TEST HOWITZER
+ * A friend class for Howitzer which contains the Howitzer unit tests
+ ********************************/
 class testHowitzer
 {
+public:
+   void run() 
+   {
+      
+   }
+
+private:
 
 };
