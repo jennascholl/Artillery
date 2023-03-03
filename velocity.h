@@ -15,12 +15,15 @@
 
 #include <math.h>         // for sqrt()
 
+class TestVelocity;       //so they can be friends
+
  /*********************************************
   * VELOCITY
   * The speed at which something travels
   *********************************************/
 class Velocity
 {
+   friend TestVelocity; //Allow testVelocity access to privates, cuz that's what friends do
 private:
    // member variables
    long double dx;
