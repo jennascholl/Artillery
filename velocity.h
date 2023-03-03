@@ -23,29 +23,24 @@ class Velocity
 {
 private:
    // member variables
-   double dx;
-   double dy;
-
-   // private functions
-   double computeDX(double total, Angle angle);
-   double computeDY(double total, Angle angle);
+   long double dx;
+   long double dy;
 
 public:
    // constructors
    Velocity() : dx(0.0), dy(0.0)   {}
-   Velocity(double v, Angle angle);
-   Velocity(double dx, double dy);
+   Velocity(long double dx, long double dy);
 
    // getters
-   double getDX()    const { return dx; }
-   double getDY()    const { return dy; }
-   double getSpeed() const;
+   long double getDX()    const { return dx; }
+   long double getDY()    const { return dy; }
+   long double getSpeed() const;
 
    // setters
-   void setDX(const double &dx) { this->dx = dx; }
-   void setDY(const double &dy) { this->dy = dy; }
+   void setDX(const long double &dx) { this->dx = dx; }
+   void setDY(const long double &dy) { this->dy = dy; }
 
    // special functions
-   void add(Acceleration a, double t);
+   void add(Acceleration a, long double t);
 
 };

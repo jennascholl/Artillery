@@ -41,7 +41,7 @@ public:
    
    // Methods specific to drawing text on the screen
    virtual void flush();
-   void setPosition(const Position& pos) { flush(); this->pos = pos; }
+   virtual void setPosition(const Position& pos) { flush(); this->pos = pos; }
    ogstream& operator = (const Position& pos)
    {
       setPosition(pos);
@@ -74,6 +74,7 @@ private:
 int    random(int    min, int    max);
 double random(double min, double max);
 
+
 #include <cassert>
 
 /*************************************************************************
@@ -83,15 +84,19 @@ double random(double min, double max);
 class ogstreamDummy : public ogstream
 {
 public:
-   ogstreamDummy()  {          }
+   ogstreamDummy() {          }
    ~ogstreamDummy() { str(""); }
-   void flush()                                                              { assert(false); }
+   void flush() { assert(false); }
    void drawLine(const Position& begin, const Position& end,
-      double red = 0.0, double green = 0.0, double blue = 0.0)               { assert(false); }
+      double red = 0.0, double green = 0.0, double blue = 0.0) {
+      assert(false);
+   }
    void drawRectangle(const Position& begin, const Position& end,
-      double red = 0.0, double green = 0.0, double blue = 0.0)               { assert(false); }
-   void drawProjectile(const Position& pos, double age = 0.0)                { assert(false); }
-   void drawHowitzer(const Position& pos, double angle, double age)          { assert(false); }
-   void drawTarget(const Position& pos)                                      { assert(false); }
-   void drawText(const Position& topLeft, const char* text)                  { assert(false); }
+      double red = 0.0, double green = 0.0, double blue = 0.0) {
+      assert(false);
+   }
+   void drawProjectile(const Position& pos, double age = 0.0) { assert(false); }
+   void drawHowitzer(const Position& pos, double angle, double age) { assert(false); }
+   void drawTarget(const Position& pos) { assert(false); }
+   void drawText(const Position& topLeft, const char* text) { assert(false); }
 };

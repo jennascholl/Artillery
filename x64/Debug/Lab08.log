@@ -1,0 +1,15 @@
+﻿  acceleration.cpp
+  angle.cpp
+  ground.cpp
+  Lab07Prototype.cpp
+  Lab08.cpp
+  position.cpp
+  test.cpp
+  uiDraw.cpp
+  uiInteract.cpp
+C:\Projects\Winter 2023\CSE230\Artillery\uiInteract.cpp(291,74): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+C:\Projects\Winter 2023\CSE230\Artillery\uiInteract.cpp(291,46): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  velocity.cpp
+  Generating Code...
+C:\Projects\Winter 2023\CSE230\Artillery\Lab07Prototype.cpp(71): warning C4715: 'lookupValue': not all control paths return a value
+  Lab08.vcxproj -> C:\Projects\Winter 2023\CSE230\Artillery\x64\Debug\Lab08.exe

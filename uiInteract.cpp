@@ -288,7 +288,7 @@ void Interface::initialize(int argc, char ** argv, const char * title,
    glClearColor(1.0, 1.0, 1.0, 0);            // White is the background color
    gluOrtho2D(0, (int)posUpperRight.getPixelsX(),    // range of x values: (0, width)
               0, (int)posUpperRight.getPixelsY());   // range of y values: (0, height)
-   glutReshapeWindow((int)posUpperRight.getPixelsX(), (int)posUpperRight.getPixelsY());
+   glutReshapeWindow(posUpperRight.getPixelsX(), posUpperRight.getPixelsY());
 
    // register the callbacks so OpenGL knows how to call us
    glutDisplayFunc(   drawCallback    );

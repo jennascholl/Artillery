@@ -267,7 +267,7 @@ void ogstream :: drawHowitzer(const Position & pos, double angle, double age)
 
       for (int i = 0; i < 10; i++)
       {
-         GLfloat color = (GLfloat)((10.0 - (double)i) / 10.0);
+         GLfloat color = (GLfloat)((10.0 - i) / 10.0);
          glColor3f(1.0 /* red % */, (GLfloat)color /* green % */, (GLfloat)color /* blue % */);
          glVertexPoint(rotate(posRotate, pointsMuzzleFlash[i][0].x,
                                         pointsMuzzleFlash[i][0].y, angle));

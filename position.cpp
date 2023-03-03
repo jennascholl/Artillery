@@ -10,7 +10,10 @@
 #include "position.h"
 #include <cassert>
 
-
+/******************************************
+* POINT : non-default constructor
+* create a point in x,y in meters
+*****************************************/
 Position::Position(double x, double y) : x(0.0), y(0.0)
 {
    setMetersX(x);
@@ -28,29 +31,28 @@ Position& Position::operator = (const Position& pt)
    return *this;
 }
 
-
 /******************************************
  * POSITION insertion
- *       Display coordinates on the screen
+ *       Display position on the screen
  *****************************************/
 std::ostream& operator << (std::ostream& out, const Position& pt)
 {
-   out << "(" << pt.getMetersX() << "m , " << pt.getMetersY() << "m)";
+   out << "(" << pt.getMetersX() << "m , " << pt.getMetersY() << ",)";
    return out;
 }
-   
+
 /*******************************************
 * POSITION extraction
 *       Prompt for coordinates
 ******************************************/
-std::istream& operator >> (std::istream& in, Position& pt)
+std::istream& operator >> (std::istream& in, Position& pos)
 {
    double x;
    double y;
    in >> x >> y;
 
-   pt.setMetersX(x);
-   pt.setMetersY(y);
+   pos.setMetersX(x);
+   pos.setMetersY(y);
 
    return in;
 }

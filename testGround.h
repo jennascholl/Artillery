@@ -26,91 +26,92 @@ class TestGround
 public:
    void run()
    {
-      constructor();
+      test_constructor();
 
-      getElevationMeters_out();
-      getElevationMeters_two();
+      test_getElevationMeters_out();
+      test_getElevationMeters_two();
 
-      reset_two();
+      test_reset_two();
 
-      getTarget_two();
-      getTarget_seven();
+      test_getTarget_two();
+      test_getTarget_seven();
 
-      draw();
+      test_draw();
    }
 
 private:
+   double metersFromPixels = -1.0;
 
    // Test the default constructor
-   void constructor()
+   void test_constructor()
    {  // setup
       Position posUpperRight;
-      posUpperRight.setPixelsX(4);
-      posUpperRight.setPixelsY(5);
+      double metersFromPixels = posUpperRight.metersFromPixels;
+      posUpperRight.metersFromPixels = 1100.0;
+      posUpperRight.x = 4400; // 4px
+      posUpperRight.y = 5500; // 5px
       // exercise
       Ground g(posUpperRight);
       // verify
       assert(g.iHowitzer == 0);
       assert(g.ground != nullptr);
-      assert(g.posUpperRight.getPixelsX() == 4);
-      assert(g.posUpperRight.getPixelsY() == 5);
-      assert(posUpperRight.getPixelsX() == 4);
-      assert(posUpperRight.getPixelsY() == 5);
+      assert(g.posUpperRight.x == 4400);
+      assert(g.posUpperRight.y == 5500);
+      assert(posUpperRight.x == 4400);
+      assert(posUpperRight.y == 5500);
+      // teardown
+      posUpperRight.metersFromPixels = metersFromPixels;
    }  // teardown
 
    // when the shell is out of range
-   void getElevationMeters_out()
+   void test_getElevationMeters_out()
    {  // setup
-      Position pos;
-      double zoom = pos.getZoom();
-      pos.setZoom(1100.0);
-      pos.setPixelsX(-1);
-      pos.setPixelsY(4);
       Ground g;
       setupStandardFixture(g);
+      Position pos;
+      pos.x = -1100.0;
+      pos.y = 5500.0;
       // exercise
       double elevation = g.getElevationMeters(pos);
       // verify
       assert(elevation == 0.0);
       verifyStandardFixture(g);
       // teardown
-      pos.setZoom(zoom);
-   }  // teardown
+      teardownStandardFixture(g);
+   }  
 
    // The shell is 2 pixels above the ground
-   void getElevationMeters_two()
+   void test_getElevationMeters_two()
    {  // setup
-      Position pos;
-      double zoom = pos.getZoom();
-      pos.setZoom(1100.0);
-      pos.setPixelsX(2);
-      pos.setPixelsY(9);
       Ground g;
       setupStandardFixture(g);
+      Position pos;
+      pos.x = 2200.0;
+      pos.y = 9900.0;
       // exercise
       double elevation = g.getElevationMeters(pos);
       // verify
       assert(elevation == 7700.0);  // 7 pixels high or 7700m
       verifyStandardFixture(g);
       // teardown
-      pos.setZoom(zoom);
+      teardownStandardFixture(g);
    }  
 
-   // The shell is 2 pixels above the ground
-   void reset_two()
+   // test the ground
+   void test_reset_two()
    {  // setup
       Position posHowitzer;
       Ground g;
       setupStandardFixture(g);
-      posHowitzer.setPixelsX(3.0);
-      posHowitzer.setPixelsY(4.0);
+      posHowitzer.x = 3300.0;  // 3px
+      posHowitzer.y = 4400.0;  // 4px
       // exercise
       g.reset(posHowitzer);
       // verify
       assert(g.iHowitzer == 3);
       assert(g.iTarget >= 0 && g.iTarget < 10);
-      assert(g.posUpperRight.getPixelsX() == 10.0);
-      assert(g.posUpperRight.getPixelsY() == 10.0);
+      assert(g.posUpperRight.x == 11000.0);  // 10px
+      assert(g.posUpperRight.y == 11000.0);  // 10px
       assert(g.ground != nullptr);
       if (g.ground != nullptr)
       {
@@ -125,11 +126,13 @@ private:
          assert(g.ground[8] >= 0.0 && g.ground[8] < 10.0);
          assert(g.ground[9] >= 0.0 && g.ground[9] < 10.0);
       }
-   }  // teardown
+      // teardown
+      teardownStandardFixture(g);
+   }  
 
 
    // The shell is 2 pixels above the ground
-   void getTarget_two()
+   void test_getTarget_two()
    {  // setup
       Position pos;
       Ground g;
@@ -139,14 +142,16 @@ private:
       // exercise
       Position posTarget = g.getTarget();
       // verify
-      assert(posTarget.getPixelsX() == 2.0);
-      assert(posTarget.getPixelsY() == 7.0);
+      assert(posTarget.x == 2200.0);  // 2px
+      assert(posTarget.y == 7700.0);  // 7px
       g.iTarget = iTargetSave;
       verifyStandardFixture(g);
-   }  // teardown
+      // teardown
+      teardownStandardFixture(g);
+   }  
 
    // The shell is 7 pixels above the ground
-   void getTarget_seven()
+   void test_getTarget_seven()
    {  // setup
       Position pos;
       Ground g;
@@ -156,11 +161,13 @@ private:
       // exercise
       Position posTarget = g.getTarget();
       // verify
-      assert(posTarget.getPixelsX() == 7.0);
-      assert(posTarget.getPixelsY() == 2.0);
+      assert(posTarget.x == 7700.0);  // 7px
+      assert(posTarget.y == 2200.0);  // 2px
       g.iTarget = iTargetSave;
       verifyStandardFixture(g);
-   }  // teardown
+      // teardown
+      teardownStandardFixture(g);
+   }  
 
    // Spy to see exactly what ogstream::draw*() methods are called... and how.
    class ogstreamSpy : public ogstreamDummy
@@ -191,7 +198,7 @@ private:
    };
 
    // draw
-   void draw()
+   void test_draw()
    {  // setup
       Position pos;
       Ground g;
@@ -201,52 +208,54 @@ private:
       g.draw(goutSpy);
       // verify
       assert(goutSpy.targets.size() == 1);
-      assert(0 <= goutSpy.targets.front().getPixelsX() && goutSpy.targets.front().getPixelsX() < 10);
-      assert(0 <= goutSpy.targets.front().getPixelsY() && goutSpy.targets.front().getPixelsY() < 10);
+      assert(0.0 <= goutSpy.targets.front().x && goutSpy.targets.front().x < 11000.0);
+      assert(0.0 <= goutSpy.targets.front().y && goutSpy.targets.front().y < 11000.0);
       assert(goutSpy.rectanglesBegin.size() == 10);
       assert(goutSpy.rectanglesEnd.size() == 10);
-      assert(goutSpy.rectanglesBegin[0].getPixelsX() == 0);
-      assert(goutSpy.rectanglesBegin[1].getPixelsX() == 1);
-      assert(goutSpy.rectanglesBegin[2].getPixelsX() == 2);
-      assert(goutSpy.rectanglesBegin[3].getPixelsX() == 3);
-      assert(goutSpy.rectanglesBegin[4].getPixelsX() == 4);
-      assert(goutSpy.rectanglesBegin[5].getPixelsX() == 5);
-      assert(goutSpy.rectanglesBegin[6].getPixelsX() == 6);
-      assert(goutSpy.rectanglesBegin[7].getPixelsX() == 7);
-      assert(goutSpy.rectanglesBegin[8].getPixelsX() == 8);
-      assert(goutSpy.rectanglesBegin[9].getPixelsX() == 9);
-      assert(goutSpy.rectanglesBegin[0].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[1].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[2].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[3].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[4].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[5].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[6].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[7].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[8].getPixelsY() == 0);
-      assert(goutSpy.rectanglesBegin[9].getPixelsY() == 0);
-      assert(goutSpy.rectanglesEnd[0].getPixelsX() == 1);
-      assert(goutSpy.rectanglesEnd[1].getPixelsX() == 2);
-      assert(goutSpy.rectanglesEnd[2].getPixelsX() == 3);
-      assert(goutSpy.rectanglesEnd[3].getPixelsX() == 4);
-      assert(goutSpy.rectanglesEnd[4].getPixelsX() == 5);
-      assert(goutSpy.rectanglesEnd[5].getPixelsX() == 6);
-      assert(goutSpy.rectanglesEnd[6].getPixelsX() == 7);
-      assert(goutSpy.rectanglesEnd[7].getPixelsX() == 8);
-      assert(goutSpy.rectanglesEnd[8].getPixelsX() == 9);
-      assert(goutSpy.rectanglesEnd[9].getPixelsX() == 10);
-      assert(goutSpy.rectanglesEnd[0].getPixelsY() == 9);
-      assert(goutSpy.rectanglesEnd[1].getPixelsY() == 8);
-      assert(goutSpy.rectanglesEnd[2].getPixelsY() == 7);
-      assert(goutSpy.rectanglesEnd[3].getPixelsY() == 6);
-      assert(goutSpy.rectanglesEnd[4].getPixelsY() == 5);
-      assert(goutSpy.rectanglesEnd[5].getPixelsY() == 4);
-      assert(goutSpy.rectanglesEnd[6].getPixelsY() == 3);
-      assert(goutSpy.rectanglesEnd[7].getPixelsY() == 2);
-      assert(goutSpy.rectanglesEnd[8].getPixelsY() == 1);
-      assert(goutSpy.rectanglesEnd[9].getPixelsY() == 0);
+      assert(goutSpy.rectanglesBegin[0].x == 0.0);
+      assert(goutSpy.rectanglesBegin[1].x == 1100.0);
+      assert(goutSpy.rectanglesBegin[2].x == 2200.0);
+      assert(goutSpy.rectanglesBegin[3].x == 3300.0);
+      assert(goutSpy.rectanglesBegin[4].x == 4400.0);
+      assert(goutSpy.rectanglesBegin[5].x == 5500.0);
+      assert(goutSpy.rectanglesBegin[6].x == 6600.0);
+      assert(goutSpy.rectanglesBegin[7].x == 7700.0);
+      assert(goutSpy.rectanglesBegin[8].x == 8800.0);
+      assert(goutSpy.rectanglesBegin[9].x == 9900.0);
+      assert(goutSpy.rectanglesBegin[0].y == 0.0);
+      assert(goutSpy.rectanglesBegin[1].y == 0.0);
+      assert(goutSpy.rectanglesBegin[2].y == 0.0);
+      assert(goutSpy.rectanglesBegin[3].y == 0.0);
+      assert(goutSpy.rectanglesBegin[4].y == 0.0);
+      assert(goutSpy.rectanglesBegin[5].y == 0.0);
+      assert(goutSpy.rectanglesBegin[6].y == 0.0);
+      assert(goutSpy.rectanglesBegin[7].y == 0.0);
+      assert(goutSpy.rectanglesBegin[8].y == 0.0);
+      assert(goutSpy.rectanglesBegin[9].y == 0.0);
+      assert(goutSpy.rectanglesEnd[0].x == 1100.0);
+      assert(goutSpy.rectanglesEnd[1].x == 2200.0);
+      assert(goutSpy.rectanglesEnd[2].x == 3300.0);
+      assert(goutSpy.rectanglesEnd[3].x == 4400.0);
+      assert(goutSpy.rectanglesEnd[4].x == 5500.0);
+      assert(goutSpy.rectanglesEnd[5].x == 6600.0);
+      assert(goutSpy.rectanglesEnd[6].x == 7700.0);
+      assert(goutSpy.rectanglesEnd[7].x == 8800.0);
+      assert(goutSpy.rectanglesEnd[8].x == 9900.0);
+      assert(goutSpy.rectanglesEnd[9].x == 11000.0);
+      assert(goutSpy.rectanglesEnd[0].y == 9900.0);
+      assert(goutSpy.rectanglesEnd[1].y == 8800.0);
+      assert(goutSpy.rectanglesEnd[2].y == 7700.0);
+      assert(goutSpy.rectanglesEnd[3].y == 6600.0);
+      assert(goutSpy.rectanglesEnd[4].y == 5500.0);
+      assert(goutSpy.rectanglesEnd[5].y == 4400.0);
+      assert(goutSpy.rectanglesEnd[6].y == 3300.0);
+      assert(goutSpy.rectanglesEnd[7].y == 2200.0);
+      assert(goutSpy.rectanglesEnd[8].y == 1100.0);
+      assert(goutSpy.rectanglesEnd[9].y == 0.0);
       verifyStandardFixture(g);
-   }  // teardown
+      // teardown
+      teardownStandardFixture(g);
+   }  
 
 
    //
@@ -257,6 +266,9 @@ private:
    // standard fixture: 10 x 10 with howitzer at 5 and target at 7
    void setupStandardFixture(Ground& g)
    {
+      metersFromPixels = g.posUpperRight.metersFromPixels;
+      g.posUpperRight.metersFromPixels = 1100.0;
+
       // delete the old
       if (g.ground != nullptr)
          delete [] g.ground;
@@ -265,8 +277,8 @@ private:
       for (int i = 0; i < 10; i++)
          g.ground[i] = 9.0 - (double)i;
 
-      g.posUpperRight.setPixelsX(10.0);
-      g.posUpperRight.setPixelsY(10.0);
+      g.posUpperRight.x = 11000.0;   // 10 pixels
+      g.posUpperRight.y = 11000.0;   // 10 pixels
       g.iHowitzer = 5;
       g.iTarget = 7;
    }
@@ -276,8 +288,9 @@ private:
    {
       assert(g.iHowitzer == 5);
       assert(g.iTarget == 7);
-      assert(g.posUpperRight.getPixelsX() == 10);
-      assert(g.posUpperRight.getPixelsY() == 10);
+      assert(g.posUpperRight.x == 11000.0);
+      assert(g.posUpperRight.y == 11000.0);
+      assert(g.posUpperRight.metersFromPixels == 1100.0);
       assert(g.ground != nullptr);
       if (g.ground != nullptr)
       {
@@ -292,5 +305,12 @@ private:
          assert(g.ground[8] == 1.0);
          assert(g.ground[9] == 0.0);
       }
+   }
+
+   // standard fixture: teardown
+   void teardownStandardFixture(Ground& g)
+   {
+      assert(-1.0 != metersFromPixels);
+      g.posUpperRight.metersFromPixels = metersFromPixels;
    }
 };
