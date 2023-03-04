@@ -48,6 +48,8 @@ public:
    void addA(Acceleration a, long double t);
 
    void addVelocity(Velocity v);
+   void addDX(double dx);
+   void addDY(double dy);
 
    void reverse() { setDX(-dx); setDY(-dy); }
 
