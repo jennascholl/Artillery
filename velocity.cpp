@@ -23,7 +23,7 @@ Velocity::Velocity(long double dx, long double dy) : dx(0.0), dy(0.0)
 }
 
 /*********************************************
- * VELOCITY : GET VELOCITY
+ * VELOCITY : GET SPEED
  * Return the total current velocity
  *    x^2 + y^2 = t^2
  *********************************************/
@@ -33,11 +33,21 @@ long double Velocity::getSpeed() const
 }
 
 /*********************************************
+ * VELOCITY : ADD VELOCITY
+ * vector addition
+ *********************************************/
+void Velocity::addVelocity(Velocity v)
+{
+   dx += v.getDX();
+   dy += v.getDY();
+}
+
+/*********************************************
  * VELOCITY : ADD
  * Given an existing velocity, update it
  * with added acceleration and time
  *********************************************/
-void Velocity::add(Acceleration a, long double t)
+void Velocity::addA(Acceleration a, long double t)
 {
    dx += a.getDDX() * t;
    dy += a.getDDY() * t;
