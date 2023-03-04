@@ -77,10 +77,10 @@
     <ClInclude Include="velocity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="testHowitzer.h">
+    <ClInclude Include="testVelocity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="testVelocity.h">
+    <ClInclude Include="testDirection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
