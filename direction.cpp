@@ -36,9 +36,9 @@ double Direction::convertToRadians(double degrees) const
  *****************************************/
 void Direction::normalize()
 {
-   while (radians > M_PI / 2)
+   while (radians > M_PI * 2)
       setRadians(radians - (M_PI * 2.0));
-   while (radians < -(M_PI / 2))
+   while (radians < -(M_PI * 2))
       setRadians(radians + (M_PI * 2.0));
 }
 

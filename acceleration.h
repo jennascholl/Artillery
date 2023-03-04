@@ -11,12 +11,15 @@
 
 #include <math.h> // for sqrt()
 
+class TestVelocity;
+
 /*********************************************
  * ACCELERATION
  * Change in velocity
  *********************************************/
 class Acceleration
 {
+   friend TestVelocity;
 private:
    // member variables
    double ddx;
