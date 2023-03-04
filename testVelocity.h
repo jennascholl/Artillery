@@ -2,7 +2,7 @@
  * Header File:
  *    Test Velocity : Test the Velocity class
  * Author:
- *    Br. Helfrich
+ *    Jenna Scholl & Neil Reed
  * Summary:
  *    All the unit tests for Velocity
  ************************************************************************/
@@ -370,7 +370,7 @@ private:
    /********************************
    * ADD VELOCITY
    ********************************/
-   //Add positive dx and negative dy
+   // add positive dx and negative dy
    void test_addVelocity_positiveDXnegativeDY()
    {
       // setup
@@ -388,7 +388,7 @@ private:
       // teardown
    }
 
-   //Add negative dx and positive dy
+   // add negative dx and positive dy
    void test_addVelocity_negativeDXpositiveDY()
    {
       // setup

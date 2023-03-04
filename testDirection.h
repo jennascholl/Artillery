@@ -2,7 +2,7 @@
  * Header File:
  *    Test Direction : Test the Direction class
  * Author:
- *    Br. Helfrich
+ *    Jenna Scholl & Neil Reed
  * Summary:
  *    All the unit tests for Direction
  ************************************************************************/
@@ -25,8 +25,8 @@ public:
    void run()
    {
       test_constructor();
-      test_normalize_right();
-      test_normalize_left();
+      test_normalize_high();
+      test_normalize_low();
       test_convert_to_radians();
       test_convert_to_degrees();
       test_assign();
@@ -70,8 +70,8 @@ private:
    /********************************
    * NORMALIZE
    ********************************/
-   // normalize right
-   void test_normalize_right()
+   // normalize greater than 2pi radians
+   void test_normalize_high()
    {
       // setup
       Direction dir;
@@ -83,8 +83,8 @@ private:
       // teardown
    }
 
-   // normalize left
-   void test_normalize_left()
+   // normalize less than -2pi radians
+   void test_normalize_low()
    {
       // setup
       Direction dir;
@@ -154,7 +154,7 @@ private:
       // teardown
    }
 
-   // set radians high
+   // set radians to more than 2pi
    void test_set_radians_high()
    {
       // setup
@@ -166,7 +166,7 @@ private:
       // teardown
    }
 
-   // set radians low
+   // set radians to less than -2pi
    void test_set_radians_low()
    {
       // setup
@@ -193,7 +193,7 @@ private:
       // teardown
    }
 
-   // set degrees high
+   // set degrees to more than 360
    void test_set_degrees_high()
    {
       // setup
@@ -205,7 +205,7 @@ private:
       // teardown
    }
 
-   // set degrees low
+   // set degrees to less than -360
    void test_set_degrees_low()
    {
       // setup
@@ -237,6 +237,7 @@ private:
    {
       // setup
       Direction dir;
+      dir.radians = M_PI;
       // exercise
       dir.setUp();
       // verify
@@ -342,7 +343,7 @@ private:
       // teardown
    }
 
-   // add radians high
+   // add more than 2pi radians
    void test_add_radians_high()
    {
       // setup
@@ -354,7 +355,7 @@ private:
       // teardown
    }
 
-   // add radians low
+   // add less than -2pi radians
    void test_add_radians_low()
    {
       // setup
@@ -381,7 +382,7 @@ private:
       // teardown
    }
 
-   // add degrees high
+   // add more than 360 degrees
    void test_add_degrees_high()
    {
       // setup
@@ -393,7 +394,7 @@ private:
       // teardown
    }
 
-   // add degrees low
+   // add less than -360 degrees
    void test_add_degrees_low()
    {
       // setup

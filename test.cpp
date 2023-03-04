@@ -2,7 +2,7 @@
  * Source File:
  *    Test : Test runner
  * Author:
- *    Br. Helfrich
+ *    Br. Helfrich, Jenna Scholl, & Neil Reed
  * Summary:
  *    The test runner for all the unit tests
  ************************************************************************/

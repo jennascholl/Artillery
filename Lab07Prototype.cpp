@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include "acceleration.h"
-#include "angle.h"
+#include "direction.h"
 #include "velocity.h"
 #include "position.h"
 
@@ -214,7 +214,7 @@ void display(const double & distance, const long double & time)
 * SIMULATE
 * Simulate the artillery shot untill it hits the ground
 ********************************/
-void simulate(Angle & angle, double & airTime, double & distance)
+void simulate(Direction & angle, double & airTime, double & distance)
 {
    Position pt = Position(0.0, 0.0);                        // The projectile's current position
    Position lastPt = Position();                            // The projectile's last known position
