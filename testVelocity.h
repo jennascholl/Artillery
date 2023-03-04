@@ -26,14 +26,17 @@ public:
    {
       //Constructor test
       test_constructor();
+
       //getDX tests
       test_getDX_noVelocity();
       test_getDX_positiveVelocity();
       test_getDX_negativeLowVelocity();
+
       //getDY tests
       test_getDY_noVelocity();
       test_getDY_positiveVelocity();
       test_getDY_negativeLowVelocity();
+
       //getSpeed tests
       test_getSpeed_noSpeed();
       test_getSpeed_dxNody();
@@ -41,6 +44,18 @@ public:
       test_getSpeed_negativeDxPositiveDy();
       test_getSpeed_positiveDxNegativeDy();
       test_getSpeed_negativeDxAndDy();
+
+      //addA tests
+      test_add_noAccelerationNoTime();
+      test_add_noAcceleration();
+      test_add_lowAcceleration();
+
+      //reverse test
+      test_reverse();
+
+      //addVelocity tests
+      test_addVelocity_positiveDXnegativeDY();
+      test_addVelocity_negativeDXpositiveDY();
 
    }
 
@@ -161,7 +176,9 @@ private:
    void test_getSpeed_noSpeed()
    {
       //Setup
-      Velocity v(0.0, 0.0);
+      Velocity v;
+      v.dx = 0.0;
+      v.dy = 0.0;
       //Exersize
       double speedTest = v.getSpeed();
       //Validate
@@ -175,7 +192,9 @@ private:
    void test_getSpeed_dxNody()
    {
       // Setup
-      Velocity v(10.0, 0.0);
+      Velocity v;
+      v.dx = 10.0;
+      v.dy = 0.0;
       // Exercize
       double speedTest = v.getSpeed();
       // Validate
@@ -189,7 +208,9 @@ private:
    void test_getSpeed_dyNodx()
    {
       // Setup
-      Velocity v(0.0, 10.0);
+      Velocity v;
+      v.dx = 0.0;
+      v.dy = 10.0;
       // Exercize
       double speedTest = v.getSpeed();
       // Validate
@@ -203,7 +224,9 @@ private:
    void test_getSpeed_positiveDxAndDy()
    {
       //Setup
-      Velocity v(20.0, 10.0);
+      Velocity v;
+      v.dx = 20.0;
+      v.dy = 10.0;
       //Exercize
       double speedTest = v.getSpeed();
       //Validate
@@ -217,7 +240,9 @@ private:
    void test_getSpeed_negativeDxPositiveDy()
    {
       //Setup
-      Velocity v(-20.0, 10.0);
+      Velocity v;
+      v.dx = -20.0;
+      v.dy = 10.0;
       //Exercize
       double speedTest = v.getSpeed();
       //Validate
@@ -231,7 +256,9 @@ private:
    void test_getSpeed_positiveDxNegativeDy()
    {
       //Setup
-      Velocity v(20.0, -10.0);
+      Velocity v;
+      v.dx = 20.0;
+      v.dy = -10.0;
       //Exersise
       double speedTest = v.getSpeed();
       //Validate
@@ -245,7 +272,9 @@ private:
    void test_getSpeed_negativeDxAndDy()
    {
       //Setup
-      Velocity v(-20.0, -10.0);
+      Velocity v;
+      v.dx = -20.0;
+      v.dy = -10.0;
       //Exercise
       double speedTest = v.getSpeed();
       //Validate
@@ -258,6 +287,24 @@ private:
    /********************************
    * ADD
    ********************************/
+   // No acceleration, no time
+   void test_add_noAccelerationNoTime()
+   {
+      // setup
+      Velocity v;
+      v.dx = 5.0;
+      v.dy = 5.0;
+      Acceleration a;
+      a.ddx = 0.0;
+      a.ddy = 0.0;
+      // exercise
+      v.addA(a, 0.0);
+      // validate
+      assert(5.0 == v.dx);
+      assert(5.0 == v.dy);
+      // teardown
+   }
+
    // No acceleration, 1 sec
    void test_add_noAcceleration()
    {
@@ -269,10 +316,85 @@ private:
       a.ddx = 0.0;
       a.ddy = 0.0;
       // exercise
-      v.add(a, 1.0);
+      v.addA(a, 1.0);
       // validate
       assert(5.0 == v.dx);
       assert(5.0 == v.dy);
+      // teardown
+   }
+
+   // Low acceleration, 1 sec
+   void test_add_lowAcceleration()
+   {
+      // setup
+      Velocity v;
+      v.dx = 5.0;
+      v.dy = 5.0;
+      Acceleration a;
+      a.ddx = 2.0;
+      a.ddy = 3.0;
+      // exercise
+      v.addA(a, 1.0);
+      // validate
+      assert(7.0 == v.dx);
+      assert(8.0 == v.dy);
+      // teardown
+   }
+
+   /********************************
+   * REVERSE
+   ********************************/
+   //Reverse dx and dy
+   void test_reverse()
+   {
+      // setup
+      Velocity v;
+      v.dx = 10.0;
+      v.dy = -8.0;
+      // exercise
+      v.reverse();
+      // validate
+      assert(-10.0 == v.dx);
+      assert(8.0 == v.dy);
+      // teardown
+   }
+
+   /********************************
+   * ADD VELOCITY
+   ********************************/
+   //Add positive dx and negative dy
+   void test_addVelocity_positiveDXnegativeDY()
+   {
+      // setup
+      Velocity v1;
+      v1.dx = 10.0;
+      v1.dy = 10.0;
+      Velocity v2;
+      v2.dx = -2.0;
+      v2.dy = 3.0;
+      // exercise
+      v1.addVelocity(v2);
+      // validate
+      assert(8.0 == v1.dx);
+      assert(13.0 == v1.dy);
+      // teardown
+   }
+
+   //Add negative dx and positive dy
+   void test_addVelocity_negativeDXpositiveDY()
+   {
+      // setup
+      Velocity v1;
+      v1.dx = 10.0;
+      v1.dy = 10.0;
+      Velocity v2;
+      v2.dx = 2.0;
+      v2.dy = -3.0;
+      // exercise
+      v1.addVelocity(v2);
+      // validate
+      assert(12.0 == v1.dx);
+      assert(7.0 == v1.dy);
       // teardown
    }
 
