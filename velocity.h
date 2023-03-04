@@ -43,7 +43,12 @@ public:
    void setDX(const long double &dx) { this->dx = dx; }
    void setDY(const long double &dy) { this->dy = dy; }
 
+
    // special functions
-   void add(Acceleration a, long double t);
+   void addA(Acceleration a, long double t);
+
+   void addVelocity(Velocity v);
+
+   void reverse() { setDX(-dx); setDY(-dy); }
 
 };
