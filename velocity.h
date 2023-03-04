@@ -11,7 +11,7 @@
 #pragma once
 
 #include "acceleration.h" // for add()
-#include "angle.h"        // for computeDX() and computeDY()
+#include "direction.h"        // for computeDX() and computeDY()
 
 #include <math.h>         // for sqrt()
 

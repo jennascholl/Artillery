@@ -1,30 +1,20 @@
 /***********************************************************************
  * Source File:
- *    Angle
+ *    Direction
  * Author:
  *    Jenna Scholl & Neil Reed
  * Summary:
- *    Everything we need to know about the angle of the lander
+ *    Everything we need to know about the direction of an object
  ************************************************************************/
 
-#include "angle.h"
-
-/******************************************
- * ANGLE : CONSTRUCTOR WITH DEGREES
- * Initialize the angle to the passed value
- *****************************************/
-Angle::Angle(double degrees) : radians(convertToRadians(degrees))
-{
-   normalize();
-}
-
+#include "direction.h"
 
 /******************************************
  * CONVERT TO DEGREES
  * Convert radians to degrees:
  *     radians / 2pi = degrees / 360
  *****************************************/
-double Angle::convertToDegrees(double radians) const
+double Direction::convertToDegrees(double radians) const
 {
    return radians / (2.0 * M_PI) * 360.0;
 }
@@ -34,21 +24,21 @@ double Angle::convertToDegrees(double radians) const
  * Convert degrees to radians:
  *     radians / 2pi = degrees / 360
  *****************************************/
-double Angle::convertToRadians(double degrees) const
+double Direction::convertToRadians(double degrees) const
 {
    return (degrees / 360.0) * 2.0 * M_PI;
 }
 
 /******************************************
  * NORMALIZE
- * Reduce the angle to between 0 and 2pi 
+ * Adjust the angle to between -pi/2 and pi/2 
  * in radians
  *****************************************/
-void Angle::normalize()
+void Direction::normalize()
 {
-   while (radians > M_PI * 2.0)
+   while (radians > M_PI / 2)
       setRadians(radians - (M_PI * 2.0));
-   while (radians < -(M_PI * 2))
+   while (radians < -(M_PI / 2))
       setRadians(radians + (M_PI * 2.0));
 }
 
@@ -57,7 +47,7 @@ void Angle::normalize()
  * Set the angle with a given number of
  * degrees
  *****************************************/
-void Angle::setDegrees(double degrees)
+void Direction::setDegrees(double degrees)
 {
    setRadians(convertToRadians(degrees));
 }
@@ -67,7 +57,7 @@ void Angle::setDegrees(double degrees)
  * Set the angle with a given number of
  * radians
  *****************************************/
-void Angle::setRadians(double radians)
+void Direction::setRadians(double radians)
 {
    this->radians = radians;
    normalize();
@@ -78,7 +68,7 @@ void Angle::setRadians(double radians)
  * Add to the angle with a given number of
  * radians
  *****************************************/
-void Angle::addRadians(double radians)
+void Direction::addRadians(double radians)
 {
    this->radians += radians;
    normalize();
@@ -89,7 +79,7 @@ void Angle::addRadians(double radians)
  * Add to the angle with a given number of
  * degrees
  *****************************************/
-void Angle::addDegrees(double degrees)
+void Direction::addDegrees(double degrees)
 {
    addRadians(convertToRadians(degrees));
 }
@@ -99,7 +89,7 @@ void Angle::addDegrees(double degrees)
  * Display the angle in degrees to one
  * decimal place of accuracy
  *****************************************/
-void Angle::display() const
+void Direction::display() const
 {
    cout.setf(std::ios::fixed | std::ios::showpoint);
    cout.precision(1);

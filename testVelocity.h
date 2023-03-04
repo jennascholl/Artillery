@@ -53,7 +53,7 @@ private:
    }
 
    /********************************
-   *CONSTRUCTOR
+   * CONSTRUCTOR
    ********************************/
    //Test default constructor values
    void test_constructor()
@@ -66,11 +66,10 @@ private:
       assert(v.dx == 0.0);
       assert(v.dy == 0.0);
       //Teardown
-
    }
 
    /********************************
-   *GET DX
+   * GET DX
    ********************************/
    //No velocity
    void test_getDX_noVelocity()
@@ -113,7 +112,7 @@ private:
    }
 
    /********************************
-   *GET DY
+   * GET DY
    ********************************/
    //No velocity
    void test_getDY_noVelocity()
@@ -156,7 +155,7 @@ private:
    }
 
    /********************************
-   *GET SPEED
+   * GET SPEED
    ********************************/
    //No speed
    void test_getSpeed_noSpeed()
