@@ -13,6 +13,10 @@
 #include "testVelocity.h"
 #include "testDirection.h"
 
+#include <iostream>
+
+using namespace std;
+
 /*****************************************************************
  * TEST RUNNER
  * Runs all the unit tests
@@ -23,4 +27,6 @@ void testRunner()
    TestGround().run();
    TestVelocity().run();
    TestDirection().run();
+
+   cout << "\nAll tests passed!" << endl;
 }

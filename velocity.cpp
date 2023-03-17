@@ -36,7 +36,7 @@ long double Velocity::getSpeed() const
  * VELOCITY : ADD VELOCITY
  * vector addition
  *********************************************/
-void Velocity::addVelocity(Velocity v)
+void Velocity::addVelocity(const Velocity & v)
 {
    dx += v.getDX();
    dy += v.getDY();
@@ -47,8 +47,28 @@ void Velocity::addVelocity(Velocity v)
  * Given an existing velocity, update it
  * with added acceleration and time
  *********************************************/
-void Velocity::addA(Acceleration a, long double t)
+void Velocity::addA(const Acceleration & a, long double t)
 {
    dx += a.getDDX() * t;
    dy += a.getDDY() * t;
+}
+
+/*********************************************
+ * VELOCITY : ADD DX
+ * Given an existing velocity, update it
+ * with added horizontal velocity
+ *********************************************/
+void Velocity::addDX(double dx)
+{
+   this->dx += dx;
+}
+
+/*********************************************
+ * VELOCITY : ADD DY
+ * Given an existing vel ocity, update it
+ * with added vertical velocity
+ *********************************************/
+void Velocity::addDY(double dy)
+{
+   this->dy += dy;
 }

@@ -240,7 +240,7 @@ void simulate(Direction & angle, double & airTime, double & distance)
       Acceleration acceleration(-sin(angle.getRadians()) * acc,
          -cos(angle.getRadians()) * acc - gravity);
 
-      v.add(acceleration, TIME);
+      v.addA(acceleration, TIME);
 
       lastPt = pt;       // Update the projectile's last known position
       pt.addMetersX(v.getDX() * TIME + 0.5 * acceleration.getDDX() * TIME * TIME);

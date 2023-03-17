@@ -281,7 +281,7 @@ private:
       // exercise
       dir.reverse();
       // verify
-      assert(dir.radians == -M_PI);
+      assert(dir.radians == 2 * M_PI);
       // teardown
    }
 
@@ -294,7 +294,7 @@ private:
       // exercise
       dir.reverse();
       // verify
-      assert(dir.radians == M_PI);
+      assert(dir.radians == 0);
       // teardown
    }
 

@@ -10,7 +10,7 @@
 #include "direction.h"
 
 /******************************************
- * CONVERT TO DEGREES
+ * DIRECTION :  CONVERT TO DEGREES
  * Convert radians to degrees:
  *     radians / 2pi = degrees / 360
  *****************************************/
@@ -20,7 +20,7 @@ double Direction::convertToDegrees(double radians) const
 }
 
 /******************************************
- * CONVERT TO RADIANS
+ * DIRECTION : CONVERT TO RADIANS
  * Convert degrees to radians:
  *     radians / 2pi = degrees / 360
  *****************************************/
@@ -30,7 +30,7 @@ double Direction::convertToRadians(double degrees) const
 }
 
 /******************************************
- * NORMALIZE
+ * DIRECTION : NORMALIZE
  * Adjust the angle to between -pi/2 and pi/2 
  * in radians
  *****************************************/
@@ -43,7 +43,7 @@ void Direction::normalize()
 }
 
 /******************************************
- * ANGLE : SET DEGREES
+ * DIRECTION : SET DEGREES
  * Set the angle with a given number of
  * degrees
  *****************************************/
@@ -64,7 +64,7 @@ void Direction::setRadians(double radians)
 }
 
 /******************************************
- * ANGLE : ADD RADIANS
+ * DIRECTION : ADD RADIANS
  * Add to the angle with a given number of
  * radians
  *****************************************/
@@ -75,7 +75,7 @@ void Direction::addRadians(double radians)
 }
 
 /******************************************
- * ANGLE : ADD DEGREES
+ * DIRECTION : ADD DEGREES
  * Add to the angle with a given number of
  * degrees
  *****************************************/
@@ -85,13 +85,10 @@ void Direction::addDegrees(double degrees)
 }
 
 /******************************************
- * ANGLE : DISPLAY
- * Display the angle in degrees to one
- * decimal place of accuracy
+ * DIRECTION : REVERSE
+ * Reverse a direction
  *****************************************/
-void Direction::display() const
+void Direction::reverse()
 {
-   cout.setf(std::ios::fixed | std::ios::showpoint);
-   cout.precision(1);
-   cout << convertToDegrees(radians) << " degrees" << endl;
+   setRadians(radians + M_PI);
 }

@@ -45,9 +45,9 @@ public:
 
 
    // special functions
-   void addA(Acceleration a, long double t);
+   void addA(const Acceleration & a, long double t);
 
-   void addVelocity(Velocity v);
+   void addVelocity(const Velocity & v);
    void addDX(double dx);
    void addDY(double dy);
 

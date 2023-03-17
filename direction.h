@@ -51,7 +51,7 @@ public:
    void setUp()               { setRadians(0.0); }
    void setLeft()             { setRadians(-M_PI / 2); }
    void setRight()            { setRadians(M_PI / 2); }
-   void reverse()             { setRadians(-radians); }
+   void reverse();
 
    void display() const;
 };
