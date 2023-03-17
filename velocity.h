@@ -32,7 +32,8 @@ private:
 public:
    // constructors
    Velocity() : dx(0.0), dy(0.0)   {}
-   Velocity(long double dx, long double dy);
+   Velocity(double dx, double dy);
+   Velocity(double speed, Direction angle);
 
    // getters
    long double getDX()    const { return dx; }
@@ -46,11 +47,9 @@ public:
 
    // special functions
    void addA(const Acceleration & a, long double t);
-
    void addVelocity(const Velocity & v);
    void addDX(double dx);
    void addDY(double dy);
-
    void reverse() { setDX(-dx); setDY(-dy); }
 
 };

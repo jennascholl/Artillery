@@ -8,6 +8,7 @@
  ************************************************************************/
 
 #include "projectile.h"
+#include "physics.h"
 
 /*********************************************
  * PROJECTILE : CONSTRUCTOR
@@ -17,7 +18,7 @@ Projectile::Projectile()
 {
    setMass(46.7);
    setRadius(0.07745);
-   // how do I set the flight path?
+   flightPath.reserve(20);
 }
 
 /*********************************************
@@ -26,7 +27,7 @@ Projectile::Projectile()
  *********************************************/
 void Projectile::reset()
 {
-   // reset the flight path
+   flightPath.clear();
 }
 
 /*********************************************
@@ -36,7 +37,7 @@ void Projectile::reset()
 void Projectile::draw(ogstream& gout) const
 {
    for (int i = 0; i < 20; i++)
-      gout.drawProjectile(flightPath[i], 0.5 * (double)i);
+      gout.drawProjectile(flightPath[i].pos, 0.5 * (double)i);
 }
 
 /*********************************************
@@ -45,7 +46,7 @@ void Projectile::draw(ogstream& gout) const
  *********************************************/
 bool Projectile::isFlying()
 {
-   return false;
+   return flightPath.empty()/* || flightPath.back().pos.getMetersY() > 0.0*/;
 }
 
 /*********************************************
@@ -54,8 +55,7 @@ bool Projectile::isFlying()
  *********************************************/
 double Projectile::getAltitude()
 {
-   // where does the flight path start?
-   return 0.0;
+   return flightPath.back().pos.getMetersY();
 }
 
 /*********************************************
@@ -64,8 +64,7 @@ double Projectile::getAltitude()
  *********************************************/
 Position Projectile::getPosition()
 {
-   // where does the flight path start?
-   return Position();
+   return flightPath.back().pos;
 }
 
 /*********************************************
@@ -74,7 +73,7 @@ Position Projectile::getPosition()
  *********************************************/
 double Projectile::getFlightTime()
 {
-   return 0.0;
+   return flightPath.back().time;
 }
 
 /*********************************************
@@ -83,7 +82,7 @@ double Projectile::getFlightTime()
  *********************************************/
 double Projectile::getFlightDistance()
 {
-   return 0.0;
+   return flightPath.back().pos.getMetersX() - flightPath.front().pos.getMetersX();
 }
 
 /*********************************************
@@ -92,7 +91,7 @@ double Projectile::getFlightDistance()
  *********************************************/
 double Projectile::getSpeed()
 {
-   return 0.0;
+   return flightPath.back().vel.getSpeed();
 }
 
 /*********************************************
@@ -101,14 +100,47 @@ double Projectile::getSpeed()
  *********************************************/
 void Projectile::fire(Position pos, double time, Direction angle, Velocity vel)
 {
+   PVT pvt;
+   pvt.pos = pos;
+   pvt.vel = vel;
+   pvt.time = time;
 
+   flightPath.push_back(pvt);
 }
 
 /*********************************************
  * PROJECTILE : ADVANCE
  * Move the projectile by one unit of time
  *********************************************/
-void advance(double time)
+void Projectile::advance(double time)
 {
+   PVT pvt = flightPath.back();
+   double speed = pvt.vel.getSpeed();
+   double altitude = pvt.pos.getMetersY();
+   Direction down;
+   down.setDown();
 
+   // modify velocity to accomodate wind resistance
+   double density = densityFromAltitude(altitude);
+   double dragCoefficient = dragFromSpeed(speed, altitude);
+   double windResistance = forceFromDrag(density, dragCoefficient, radius, speed);
+   double accelerationDrag = accelerationFromForce(windResistance, mass);
+   Velocity velocityWind(velocityFromAcceleration(accelerationDrag, time), down.getRadians());
+   velocityWind.reverse();
+   pvt.vel.addVelocity(velocityWind);
+
+   // modify velocity to handle gravity
+   double accelerationGravity = gravityFromAltitude(altitude);
+   Velocity velocityGravity(velocityFromAcceleration(accelerationGravity, time), down.getRadians());
+   pvt.vel.addVelocity(velocityWind);
+
+   // inertia
+   pvt.pos.addMetersX(velocityFromAcceleration(pvt.vel.getDX(), time));
+   pvt.pos.addMetersY(velocityFromAcceleration(pvt.vel.getDY(), time));
+
+   // update time
+   pvt.time += time;
+
+   // add it to the back of the flight path
+   flightPath.push_back(pvt);
 }

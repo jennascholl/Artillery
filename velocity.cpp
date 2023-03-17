@@ -16,10 +16,21 @@
  * Initialize velocity to the passed dx
  * and dy
  *****************************************/
-Velocity::Velocity(long double dx, long double dy) : dx(0.0), dy(0.0)
+Velocity::Velocity(double dx, double dy) : dx(0.0), dy(0.0)
 {
    setDX(dx);
    setDY(dy);
+}
+
+/******************************************
+ * VELOCITY : CONSTRUCTOR WITH SPEED, ANGLE
+ * Initialize velocity using the passed speed
+ * and angle
+ *****************************************/
+Velocity::Velocity(double speed, Direction angle)
+{
+   dx = sin(angle.getRadians()) * speed;
+   dy = cos(angle.getRadians()) * speed;
 }
 
 /*********************************************

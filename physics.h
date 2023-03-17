@@ -205,6 +205,20 @@ double speedOfSoundFromAltitude(double altitude)
 }
 
 /*********************************
+* MACH FROM SPEED
+* Determine the mach for a given speed and altitude
+* Equation:
+*     mach = speed / speed of sound
+*********************************/
+double machFromSpeed(double speed, double altitude)
+{
+   // compute the speed of sound at this altitude
+   double speedOfSound = speedOfSoundFromAltitude(altitude);
+
+   return speed / speedOfSound;
+}
+
+/*********************************
 * DRAG FROM SPEED
 * Determine the drag coefficient for a given speed and altitude
 *********************************/
@@ -241,18 +255,42 @@ double dragFromSpeed(double speed, double altitude)
 }
 
 /*********************************
-* MACH FROM SPEED
-* Determine the mach for a given speed and altitude
-* Equation:
-*     mach = speed / speed of sound
-*********************************/
-double machFromSpeed(double speed, double altitude)
+* DENSITY FROM ALTITUDE
+* Determine the air density at a given altitude
+********************************/
+double densityFromAltitude(double altitude)
 {
-   // compute the speed of sound at this altitude
-   double speedOfSound = speedOfSoundFromAltitude(altitude);
+   const Mapping densityMapping[] = 
+   {
+    // altitude, density
+    {    0.0, 1.2250000}, 
+    { 1000.0, 1.1120000}, 
+    { 2000.0, 1.0070000}, 
+    { 3000.0, 0.9093000},
+    { 4000.0, 0.8194000}, 
+    { 5000.0, 0.7364000}, 
+    { 6000.0, 0.6601000}, 
+    { 7000.0, 0.5900000},
+    { 8000.0, 0.5258000}, 
+    { 9000.0, 0.4671000}, 
+    {10000.0, 0.4135000}, 
+    {15000.0, 0.1948000},
+    {20000.0, 0.0889100}, 
+    {25000.0, 0.0400800}, 
+    {30000.0, 0.0184100}, 
+    {40000.0, 0.0039960},
+    {50000.0, 0.0010270}, 
+    {60000.0, 0.0003097}, 
+    {70000.0, 0.0000828}, 
+    {80000.0, 0.0000185}
+   };
 
-   return speed / speedOfSound;
+   // look up the value
+   double density = linearInterpolation(densityMapping, sizeof(densityMapping) / sizeof(densityMapping[0]), altitude);
+
+   return density;
 }
+
 
 
 /*********************************
@@ -272,25 +310,6 @@ double machFromSpeed(double speed, double altitude)
 //   };
 //
 //   return lookupValue(dragTable, mach);
-//}
-
-/*********************************
-* CALCULATE DENSITY
-* Determine the air density at a given altitude
-********************************/
-//long double calculateDensity(const long double& altitude)
-//{
-//   // A lookup table for air density (second) according to altitude (first)
-//   std::map<long double, long double> const densityTable
-//   {
-//         {    0.0, 1.2250000}, { 1000.0, 1.1120000}, { 2000.0, 1.0070000}, { 3000.0, 0.9093000},
-//         { 4000.0, 0.8194000}, { 5000.0, 0.7364000}, { 6000.0, 0.6601000}, { 7000.0, 0.5900000},
-//         { 8000.0, 0.5258000}, { 9000.0, 0.4671000}, {10000.0, 0.4135000}, {15000.0, 0.1948000},
-//         {20000.0, 0.0889100}, {25000.0, 0.0400800}, {30000.0, 0.0184100}, {40000.0, 0.0039960},
-//         {50000.0, 0.0010270}, {60000.0, 0.0003097}, {70000.0, 0.0000828}, {80000.0, 0.0000185}
-//   };
-//
-//   return lookupValue(densityTable, altitude);
 //}
 
 /*********************************
