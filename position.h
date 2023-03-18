@@ -31,6 +31,7 @@ public:
    Position(double x, double y); // in meters
    Position(const Position & pt) : x(pt.x), y(pt.y) {}
    Position& operator = (const Position& pt);
+   bool operator == (const Position& rhs) const;
 
    // getters
    double getMetersX() const { return x;                    }

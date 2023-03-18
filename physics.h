@@ -30,6 +30,16 @@ inline double areaFromRadius(double radius)
 }
 
 /*********************************
+* ANGLE FROM VELOCITY
+* Given dx and dy, returns an angle
+* in radians
+********************************/
+long double angleFromVelocity(long double dx, long double dy)
+{
+   return atan2(dx, dy);
+}
+
+/*********************************
 * FORCE FROM DRAG
 * Determine the drag on a shell based on:
 *     density  : the density of the air

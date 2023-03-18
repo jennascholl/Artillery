@@ -13,9 +13,12 @@
  * HOWITZER : CONSTRUCTOR
  * Get everything set up
  *********************************************/
-Howitzer::Howitzer()
+Howitzer::Howitzer() : muzzleVelocity(827.0)
 {
+   position.setPixelsX(0.0);
+   position.setPixelsY(0.0);
 
+   angle.setUp();
 }
 
 /*********************************************
@@ -24,16 +27,23 @@ Howitzer::Howitzer()
  *********************************************/
 void Howitzer::draw(ogstream& gout, double time) const
 {
-   gout.drawHowitzer(position, elevation.getRadians(), time);
+   gout.drawHowitzer(position, angle.getRadians(), time);
 }
 
 /*********************************************
  * HOWITZER : GENERATE POSITION
  * Generate a position for the Howitzer
  *********************************************/
-void Howitzer::generatePosition(double size)
+Position Howitzer::generatePosition(const Position & ptUpperRight, double size)
 {
+   Position pos;
+   pos.setPixelsX((int)random(ptUpperRight.getPixelsX() * 0.1,
+      ptUpperRight.getPixelsX() * 0.9 - size));
+   pos.setPixelsY(0.0);
+   position.setPixelsX(pos.getPixelsX());
+   position.setPixelsY(pos.getPixelsY());
 
+   return pos;
 }
 
 /*********************************************
@@ -42,5 +52,11 @@ void Howitzer::generatePosition(double size)
  *********************************************/
 void Howitzer::raise()
 {
-   
+   // if the gun is pointing left, move it right
+   if (angle.getRadians() < 0.0)
+      angle.addRadians(0.003);
+
+   // if it's pointing right, move it left
+   else if (angle.getRadians() > 0.0)
+      angle.addRadians(-0.003);
 }

@@ -9,22 +9,19 @@
 
 #include "simulator.h"
 
- /*********************************************
- * SIMULATOR : CONSTRUCTOR
- * Get everything set up
- *********************************************/
-Simulator::Simulator()
-{
-
-}
-
 /*********************************************
 * SIMULATOR : RESET
 * Reset the simulator
 *********************************************/
 void Simulator::reset()
 {
-
+   status = LOADED;
+   double simTime = 0.0;
+   projectile.reset();
+   howitzer.generatePosition(ptUpperRight, 20.0);
+   Position posHowitzer = howitzer.getPosition();
+   ground.reset(posHowitzer);
+   howitzer.setPosition(posHowitzer);
 }
 
 /*********************************************
@@ -35,7 +32,16 @@ void Simulator::draw(ogstream& gout) const
 {
    ground.draw(gout);
    howitzer.draw(gout, simTime);
-   projectile.draw(gout);
+   if (status == FLYING)
+   {
+      projectile.draw(gout);
+
+      // draw some text on the screen
+      gout.setf(ios::fixed | ios::showpoint);
+      gout.precision(1);
+      gout << "Time since the bullet was fired: "
+         << projectile.getFlightTime() << "s\n";
+   }
 }
 
 /*********************************************
@@ -44,7 +50,8 @@ void Simulator::draw(ogstream& gout) const
 *********************************************/
 void Simulator::fire()
 {
-
+   status = FLYING;
+   projectile.fire(howitzer.getPosition(), interval, howitzer.getDirection(), howitzer.getMuzzleVelocity());
 }
 
 /*********************************************
@@ -53,7 +60,20 @@ void Simulator::fire()
 *********************************************/
 void Simulator::advance()
 {
+   if (status == FLYING)
+   {
+      simTime += interval;
+      projectile.advance(interval);
+      if (ground.getElevationMeters(projectile.getPosition()) >= getHeightMeters())
+         status = LANDED;
 
+      if (status == LANDED && !hitTarget())
+      {
+         status = LOADED;
+         double simTime = 0.0;
+         projectile.reset();
+      }
+   }
 }
 
 /*********************************************
@@ -62,23 +82,38 @@ void Simulator::advance()
 *********************************************/
 void Simulator::input(const Interface* pUI)
 {
+   // fire that gun
+   if (pUI->isSpace() && status == LOADED)
+      fire();
 
+   // recenter the gun
+   else if (pUI->isUp() || pUI->isDown())
+      howitzer.raise();
+
+   // rotate left or right
+   else if (pUI->isLeft())
+      howitzer.rotate(-0.05);
+   else if (pUI->isRight())
+      howitzer.rotate(0.05);
 }
 
 /*********************************************
 * SIMULATOR : HIT TARGET
 * Have we hit the target?
 *********************************************/
-void Simulator::hitTarget()
+bool Simulator::hitTarget()
 {
-
+   if (ground.getTarget() == projectile.getPosition())
+      return true;
+   else
+      return false;
 }
 
 /*********************************************
 * SIMULATOR : GET HEIGHT METERS
 * Get the height in meters
 *********************************************/
-void Simulator::getHeightMeters()
+double Simulator::getHeightMeters()
 {
-
+   return projectile.getAltitude();
 }

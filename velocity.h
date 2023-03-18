@@ -26,8 +26,8 @@ class Velocity
    friend TestVelocity; //Allow testVelocity access to privates, cuz that's what friends do
 private:
    // member variables
-   long double dx;
-   long double dy;
+   double dx;
+   double dy;
 
 public:
    // constructors
@@ -50,6 +50,6 @@ public:
    void addVelocity(const Velocity & v);
    void addDX(double dx);
    void addDY(double dy);
-   void reverse() { setDX(-dx); setDY(-dy); }
+   void reverse() { setDY(-dy); setDX(-dx); }
 
 };

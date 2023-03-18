@@ -37,7 +37,7 @@ class Projectile
 private:
    double mass;                // mass in kg
    double radius;              // radius in meters
-   vector<PVT> flightPath;  // the projectile's last 20 positions, velocities, and times
+   vector<PVT> flightPath;     // the projectile's last 20 positions, velocities, and times
 
 public:
    // constructor
@@ -51,17 +51,17 @@ public:
    bool isFlying();
 
    // getters
-   Position getPosition();
-   double getAltitude();
-   double getFlightTime();
-   double getFlightDistance();
-   double getSpeed();
+   Position getPosition() const;
+   double getAltitude() const;
+   double getFlightTime() const;
+   double getFlightDistance() const;
+   double getSpeed() const;
 
    // setters
    void setMass(double mass)     { this->mass = mass;     }
    void setRadius(double radius) { this->radius = radius; }
 
    // special functions
-   void fire(Position pos, double time, Direction angle, Velocity vel);
+   void fire(Position pos, double time, Direction angle, double vel);
    void advance(double time);
 };

@@ -32,6 +32,17 @@ Position& Position::operator = (const Position& pt)
 }
 
 /******************************************
+ * POINT : COMPARISON
+ * Compare two points
+ *****************************************/
+bool Position::operator == (const Position& rhs) const
+{
+   if (getMetersX() == rhs.getMetersY() && getMetersY() && rhs.getMetersY())
+      return true;
+   return false;
+}
+
+/******************************************
  * POSITION insertion
  *       Display position on the screen
  *****************************************/

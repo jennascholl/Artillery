@@ -21,11 +21,11 @@
 class Howitzer
 {
 private:
-   Position position;
-   Velocity muzzleVelocity;
-   Direction elevation;
+   double muzzleVelocity;     // speed of the shell when it leaves the Howitzer in m/s
+   Direction angle;           // which way the gun is pointing
 
 public:
+   Position position;         // the farthest left point of the Howitzer
    // constructor
    Howitzer();
 
@@ -33,15 +33,17 @@ public:
    void draw(ogstream& gout, double time) const;
 
    // getters
-   Position getPosition() { return position; }
-   Velocity getMuzzleVelocity() { return muzzleVelocity; }
+   Position getPosition()     const { return position;       }
+   double getMuzzleVelocity() const { return muzzleVelocity; }
+   Direction getDirection()   const { return angle;          }
 
    // setters
-   void generatePosition(double size);
-   void setMuzzleVelocity(Velocity vel) { muzzleVelocity = vel; }
+   Position generatePosition(const Position & ptUpperRight, double size);
+   void setMuzzleVelocity(double vel) { muzzleVelocity = vel; }
+   void setPosition(Position pos) { position = pos; }
 
    // special functions
-   void rotate(double radians) { elevation.addRadians(radians); }
+   void rotate(double radians) { angle.addRadians(radians); }
    void raise();
 
 };

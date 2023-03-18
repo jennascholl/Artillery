@@ -21,18 +21,21 @@ enum Status { LOADED, FLYING, LANDED };
 class Simulator
 {
 private:
-   double interval;        // the rate at which time passes
+   Position ptUpperRight;
+   double interval;        // the rate at which time passes (s)
    Howitzer howitzer;      // the gun
    Projectile projectile;  // the bullet
-   Status status;          // the status of our launch
-   double simTime;         // how long it's been since launch
    Ground ground;          // the ground
+   Status status;          // the status of our launch
+   double simTime;         // how long it's been since launch (s)
 
-   void hitTarget();
-   void getHeightMeters();
+   bool hitTarget();
+   double getHeightMeters();
+
 public:
    // constructor
-   Simulator();
+   Simulator(Position ptUpperRight) : ptUpperRight(ptUpperRight), interval(0.5), 
+      howitzer(), projectile(), ground(ptUpperRight), simTime(-0.5), status(LOADED) { reset(); }
 
    // reset the simulator
    void reset();
@@ -42,7 +45,7 @@ public:
 
    // setters
    void setInterval(double interval)    { this->interval = interval;       }
-   void setMuzzleVelocity(Velocity vel) { howitzer.setMuzzleVelocity(vel); }
+   void setMuzzleVelocity(double vel)   { howitzer.setMuzzleVelocity(vel); }
    void setRadius(double radius)        { projectile.setRadius(radius);    }
 
    //special functions
