@@ -30,18 +30,33 @@ void Simulator::reset()
 *********************************************/
 void Simulator::draw(ogstream& gout) const
 {
+   // draw some text on the screen
+   gout.setf(ios::fixed | ios::showpoint);
+   gout.precision(1);
+
    ground.draw(gout);
    howitzer.draw(gout, simTime);
    if (status == FLYING)
    {
       projectile.draw(gout);
 
-      // draw some text on the screen
-      gout.setf(ios::fixed | ios::showpoint);
-      gout.precision(1);
-      gout << "Time since the bullet was fired: "
-         << projectile.getFlightTime() << "s\n";
+      gout.setPosition(Position(ptUpperRight.getMetersX() * 0.83, ptUpperRight.getMetersY() * 0.95));
+      gout << "Altitude: "
+           << projectile.getAltitude() << "\tm\n"
+           << "Speed: "
+           << projectile.getSpeed() << "\tm/s\n"
+           << "Distance: "
+           << projectile.getFlightDistance() << "\tm\n"
+           << "Hang Time: "
+           << projectile.getFlightTime() << "\ts\n";
    }
+   else
+   {
+      gout.setPosition(Position(ptUpperRight.getMetersX() * 0.83, ptUpperRight.getMetersY() * 0.95));
+      gout << "Angle: "
+         << howitzer.getDirection().getDegrees() << " degrees\n";
+   }
+
 }
 
 /*********************************************
@@ -67,11 +82,16 @@ void Simulator::advance()
       if (ground.getElevationMeters(projectile.getPosition()) >= getHeightMeters())
          status = LANDED;
 
-      if (status == LANDED && !hitTarget())
-      {
-         status = LOADED;
-         double simTime = 0.0;
-         projectile.reset();
+      if (status == LANDED)
+      {         
+         if (!hitTarget())
+         {
+            status = LOADED;
+            double simTime = 0.0;
+            projectile.reset();
+         }
+         else
+            reset();
       }
    }
 }
@@ -103,7 +123,8 @@ void Simulator::input(const Interface* pUI)
 *********************************************/
 bool Simulator::hitTarget()
 {
-   if (ground.getTarget() == projectile.getPosition())
+   if (ground.getTarget().getPixelsX() >= projectile.getPosition().getPixelsX() - 5 &&
+       ground.getTarget().getPixelsX() <= projectile.getPosition().getPixelsX() + 5)
       return true;
    else
       return false;

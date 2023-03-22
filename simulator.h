@@ -35,7 +35,9 @@ private:
 public:
    // constructor
    Simulator(Position ptUpperRight) : ptUpperRight(ptUpperRight), interval(0.5), 
-      howitzer(), projectile(), ground(ptUpperRight), simTime(-0.5), status(LOADED) { reset(); }
+      howitzer(), projectile(), ground(ptUpperRight), simTime(-0.5), status(LOADED) {
+      reset(); reset(); // howitzer position is the same every time unless I do this twice??
+   }
 
    // reset the simulator
    void reset();

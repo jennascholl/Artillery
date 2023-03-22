@@ -37,6 +37,7 @@ class Projectile
 private:
    double mass;                // mass in kg
    double radius;              // radius in meters
+   Position launchPos;         // the starting position
    vector<PVT> flightPath;     // the projectile's last 20 positions, velocities, and times
 
 public:

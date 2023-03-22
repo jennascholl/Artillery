@@ -14,7 +14,7 @@
  * PROJECTILE : CONSTRUCTOR
  * Get everything set up
  *********************************************/
-Projectile::Projectile() : flightPath(20)
+Projectile::Projectile() : flightPath(20), launchPos(Position())
 {
    setMass(46.7);
    setRadius(0.07745);
@@ -92,7 +92,11 @@ double Projectile::getFlightTime() const
  *********************************************/
 double Projectile::getFlightDistance() const
 {
-   return flightPath.front().pos.getMetersX() - flightPath.front().pos.getMetersX();
+   double distance = flightPath.front().pos.getMetersX() - launchPos.getMetersX();
+   if (distance < 0)
+      return -distance;
+   else
+      return distance;
 }
 
 /*********************************************
@@ -117,6 +121,7 @@ void Projectile::fire(Position pos, double time, Direction angle, double vel)
 
    flightPath.push_back(pvt);
 
+   launchPos = pos;
 }
 
 /*********************************************

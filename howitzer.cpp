@@ -59,4 +59,7 @@ void Howitzer::raise()
    // if it's pointing right, move it left
    else if (angle.getRadians() > 0.0)
       angle.addRadians(-0.003);
+
+   if (angle.getRadians() < 0.003 && angle.getRadians() > -0.003)
+      angle.setRadians(0.0);
 }
