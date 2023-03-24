@@ -2,7 +2,7 @@
  * Header File:
  *    Test Direction : Test the Direction class
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    All the unit tests for Direction
  ************************************************************************/

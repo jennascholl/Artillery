@@ -2,7 +2,7 @@
  * Header File:
  *    Direction
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    Everything we need to know about the direction of an object
  ************************************************************************/

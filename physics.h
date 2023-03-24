@@ -2,7 +2,7 @@
  * Header File:
  *    PHYSICS : All the physics stuff
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    Laws of motion, effects of gravity, wind resistance, etc.
  ************************************************************************/

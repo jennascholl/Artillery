@@ -2,7 +2,7 @@
  * Header File:
  *    Projectile
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    Everything we need to know about our ammunition
  ************************************************************************/

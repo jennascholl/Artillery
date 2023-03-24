@@ -2,7 +2,7 @@
  * Header File:
  *    Howitzer
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    Everything we need to know about the M777 Howitzer.
  ************************************************************************/
@@ -41,6 +41,7 @@ public:
    Position generatePosition(const Position & ptUpperRight, double size);
    void setMuzzleVelocity(double vel) { muzzleVelocity = vel; }
    void setPosition(Position pos) { position = pos; }
+   void setDirection(Direction dir) { angle = dir; }
 
    // special functions
    void rotate(double radians) { angle.addRadians(radians); }

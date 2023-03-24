@@ -2,7 +2,7 @@
  * Source File:
  *    Simulator : Governs the relationship between gun and bullet
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    Ties all the elements together
  ************************************************************************/
@@ -20,6 +20,9 @@ void Simulator::reset()
    projectile.reset();
    howitzer.generatePosition(ptUpperRight, 20.0);
    Position posHowitzer = howitzer.getPosition();
+   Direction direction;
+   direction.setUp();
+   howitzer.setDirection(direction);
    ground.reset(posHowitzer);
    howitzer.setPosition(posHowitzer);
 }

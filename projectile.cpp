@@ -2,7 +2,7 @@
  * Source File:
  *    Projectile : A bullet to hit a target
  * Author:
- *    Jenna Scholl & Neil Reed
+ *    Jenna Scholl
  * Summary:
  *    Everything we need to know about our ammunition
  ************************************************************************/

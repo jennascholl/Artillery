@@ -2,7 +2,7 @@
  * Source File:
  *    Howitzer : The representation of the Howitzer on the screen
  * Author:
- *    Br. Helfrich
+ *    Jenna Scholl
  * Summary:
  *    Everything we need to know about the M777 Howitzer.
  ************************************************************************/
